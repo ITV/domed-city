@@ -12,6 +12,10 @@ module Dome
       @settings.parse['project']
     end
 
+    def skip_manage_creds
+      @settings.parse['dome_skip_manage_creds']
+    end
+
     def accounts
       %W(#{team}-dev #{team}-prd)
     end
@@ -21,15 +25,21 @@ module Dome
     end
 
     def aws_credentials
-      @aws_credentials ||= AWS::ProfileParser.new.get(@account)
-    rescue RuntimeError
-      raise "No credentials found for account: '#{@account}'."
+      unless skip_manage_creds
+        begin
+          @aws_credentials ||= AWS::ProfileParser.new.get(@account)
+        rescue RuntimeError
+          raise "No credentials found for account: '#{@account}'."
+        end
+      end
     end
 
     def populate_aws_access_keys
-      ENV['AWS_ACCESS_KEY_ID']     = aws_credentials[:access_key_id]
-      ENV['AWS_SECRET_ACCESS_KEY'] = aws_credentials[:secret_access_key]
-      ENV['AWS_DEFAULT_REGION']    = aws_credentials[:region]
+      unless skip_manage_creds
+        ENV['AWS_ACCESS_KEY_ID']     = aws_credentials[:access_key_id]
+        ENV['AWS_SECRET_ACCESS_KEY'] = aws_credentials[:secret_access_key]
+        ENV['AWS_DEFAULT_REGION']    = aws_credentials[:region]
+      end
     end
 
     def valid_account?(account_name)
