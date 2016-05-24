@@ -26,11 +26,11 @@ module Dome
 
     def aws_credentials
       unless skip_manage_creds
-          begin
-            @aws_credentials ||= AWS::ProfileParser.new.get(@account)
-          rescue RuntimeError
-            raise "No credentials found for account: '#{@account}'."
-          end
+        begin
+          @aws_credentials ||= AWS::ProfileParser.new.get(@account)
+        rescue RuntimeError
+          raise "No credentials found for account: '#{@account}'."
+        end
       end
     end
 
