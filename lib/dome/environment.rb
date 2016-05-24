@@ -25,7 +25,7 @@ module Dome
     end
 
     def aws_credentials
-      if !skip_manage_creds
+      unless skip_manage_creds
           begin
             @aws_credentials ||= AWS::ProfileParser.new.get(@account)
           rescue RuntimeError
@@ -35,7 +35,7 @@ module Dome
     end
 
     def populate_aws_access_keys
-      if !skip_manage_creds
+      unless skip_manage_creds
         ENV['AWS_ACCESS_KEY_ID']     = aws_credentials[:access_key_id]
         ENV['AWS_SECRET_ACCESS_KEY'] = aws_credentials[:secret_access_key]
         ENV['AWS_DEFAULT_REGION']    = aws_credentials[:region]
