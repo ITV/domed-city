@@ -44,11 +44,11 @@ module Dome
 
     def sts_credentials
       account_id = @accounts_ids[@account]
-      @sts_credentials ||= sts_client.assume_role({
+      @sts_credentials ||= sts_client.assume_role(
         role_arn: "arn:aws:iam::#{account_id}:role/#{@assume_role}", # required
         role_session_name: "#{account_id}-#{@assume_role}", # required
         duration_seconds: 3600
-      })
+      )
       return @sts_credentials
     rescue Aws::STS::Errors::ServiceError => e
       raise "Failed to assume role and get sts credentials for account: '#{account}' #{e}"
@@ -88,7 +88,6 @@ module Dome
     private
 
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def generic_error_message
       puts "The 'account' and 'environment' variables are assigned based on your current directory.\n".colorize(:red)
       puts "The expected directory structure is '.../<account>/<environment>'\n".colorize(:red)
