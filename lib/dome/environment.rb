@@ -33,28 +33,25 @@ module Dome
 
     def sts_client
       @sts_client = Aws::STS::Client.new(
-          access_key_id: aws_credentials[:access_key_id],
-          secret_access_key: aws_credentials[:secret_access_key],
-          region: aws_credentials[:region],
-        )
+        access_key_id: aws_credentials[:access_key_id],
+        secret_access_key: aws_credentials[:secret_access_key],
+        region: aws_credentials[:region]
+      )
       return @sts_client
-    rescue Aws::STS::Errors::ServiceError
-      raise "Failed to connect to STS service." 
+    rescue Aws::STS::Errors::ServiceError => e
+      raise "Failed to connect to STS service: #{e}"
     end
 
-    def sts_credentials        
-
-        account_id = @accounts_ids[@account]
-
-        @sts_credentials ||= sts_client.assume_role({
-          role_arn: "arn:aws:iam::#{account_id}:role/#{@assume_role}", # required
-          role_session_name: "#{account_id}-#{@assume_role}", # required
-          duration_seconds: 3600,
-        })
-
-        return @sts_credentials
+    def sts_credentials
+      account_id = @accounts_ids[@account]
+      @sts_credentials ||= sts_client.assume_role({
+        role_arn: "arn:aws:iam::#{account_id}:role/#{@assume_role}", # required
+        role_session_name: "#{account_id}-#{@assume_role}", # required
+        duration_seconds: 3600
+      })
+      return @sts_credentials
     rescue Aws::STS::Errors::ServiceError => e
-      raise "Failed to assume role and get sts credentials for account: '#{account}' #{e}"   
+      raise "Failed to assume role and get sts credentials for account: '#{account}' #{e}"
     end
 
     def populate_aws_access_keys

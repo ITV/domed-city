@@ -16,11 +16,11 @@ module Dome
 
     def s3_client
       @s3_client ||= Aws::S3::Client.new(
-          region: @environment.aws_credentials[:region],
-          access_key_id: @environment.sts_credentials.credentials.access_key_id,
-          secret_access_key: @environment.sts_credentials.credentials.secret_access_key,
-          session_token: @environment.sts_credentials.credentials.session_token,
-        )
+        region: @environment.aws_credentials[:region],
+        access_key_id: @environment.sts_credentials.credentials.access_key_id,
+        secret_access_key: @environment.sts_credentials.credentials.secret_access_key,
+        session_token: @environment.sts_credentials.credentials.session_token
+      )
     rescue AWS::S3::Errors::ServiceError => e
       raise "Error creating s3 client: #{e}"
     end
