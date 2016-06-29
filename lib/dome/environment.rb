@@ -6,6 +6,9 @@ module Dome
       @environment = directories[-1]
       @account     = directories[-2]
       @settings    = Dome::Settings.new
+      @root_account = @settings.parse['root-profile']
+      @accounts_ids = @settings.parse['accounts-mapping']
+      @assume_role  = @settings.parse['assumed-role']
     end
 
     def team
@@ -21,17 +24,46 @@ module Dome
     end
 
     def aws_credentials
-      @aws_credentials ||= AWS::ProfileParser.new.get(@account)
+      @aws_credentials ||= AWS::ProfileParser.new.get(@root_account)
       @aws_credentials.key?(:output) && @aws_credentials.delete(:output)
       return @aws_credentials
     rescue RuntimeError
-      raise "No credentials found for account: '#{@account}'."
+      raise "No credentials found for account: '#{@root_account}'."
+    end
+
+    def sts_client
+      @sts_client = Aws::STS::Client.new(
+          access_key_id: aws_credentials[:access_key_id],
+          secret_access_key: aws_credentials[:secret_access_key],
+          region: aws_credentials[:region],
+        )
+      return @sts_client
+    rescue Aws::STS::Errors::ServiceError
+      raise "Failed to connect to STS service." 
+    end
+
+    def sts_credentials        
+
+        account_id = @accounts_ids[@account]
+
+        @sts_credentials ||= sts_client.assume_role({
+          role_arn: "arn:aws:iam::#{account_id}:role/#{@assume_role}", # required
+          role_session_name: "#{account_id}-#{@assume_role}", # required
+          duration_seconds: 3600,
+        })
+
+        return @sts_credentials
+    rescue Aws::STS::Errors::ServiceError => e
+      raise "Failed to assume role and get sts credentials for account: '#{account}' #{e}"   
     end
 
     def populate_aws_access_keys
-      ENV['AWS_ACCESS_KEY_ID']     = aws_credentials[:access_key_id]
-      ENV['AWS_SECRET_ACCESS_KEY'] = aws_credentials[:secret_access_key]
+      ENV['AWS_ACCESS_KEY_ID']     = sts_credentials.credentials.access_key_id
+      ENV['AWS_SECRET_ACCESS_KEY'] = sts_credentials.credentials.secret_access_key
+      ENV['AWS_SECURITY_TOKEN']    = sts_credentials.credentials.session_token
+      ENV['AWS_SESSION_TOKEN']     = sts_credentials.credentials.session_token
       ENV['AWS_DEFAULT_REGION']    = aws_credentials[:region]
+      ENV['AWS_REGION']            = aws_credentials[:region]
     end
 
     def valid_account?(account_name)
