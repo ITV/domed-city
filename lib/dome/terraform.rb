@@ -42,14 +42,25 @@ module Dome
       delete_plan_file
       install_terraform_modules
       @state.s3_state
-      create_plan
+      raise_lock if @state.sdb_lock.locked_resources.include? @state.sdb_lock_name
+      @state.sdb_lock.lock(@state.sdb_lock_name) do
+        create_plan
+      end
     end
 
     def apply
       @secrets.secret_env_vars
+      raise_lock if @state.sdb_lock.locked_resources.include? @state.sdb_lock_name
+      @state.sdb_lock.lock(@state.sdb_lock_name) do
+        apply_plan
+      end
+    end
+
+    def apply_plan
       command         = "terraform apply #{@plan_file}"
       failure_message = 'something went wrong when applying the TF plan'
-      execute_command(command, failure_message)
+      result = execute_command(command, failure_message)
+      result
     end
 
     def create_plan
@@ -57,7 +68,8 @@ module Dome
       @secrets.extract_certs
       command         = "terraform plan -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
       failure_message = 'something went wrong when creating the TF plan'
-      execute_command(command, failure_message)
+      result = execute_command(command, failure_message)
+      result
     end
 
     def delete_terraform_directory
@@ -77,6 +89,16 @@ module Dome
       command         = 'terraform get -update=true'
       failure_message = 'something went wrong when pulling remote TF modules'
       execute_command(command, failure_message)
+    end
+
+    def raise_lock
+      puts "SimpleDB locking mechanism indicates that #{@state.sdb_lock_name}" +
+           'lock is currently in place...'.colorize(:red)
+      raise 'Dome has determined that state modification is currently locked'
+    end
+
+    def purge_locks(age = 10)
+      @state.sdb_lock.unlock_old(age)
     end
 
     def output

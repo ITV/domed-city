@@ -17,6 +17,7 @@ EOS
   opt :apply, 'Applies a Terraform plan'
   opt :state, 'Synchronises the Terraform state'
   opt :output, 'Print all Terraform output variables'
+  opt :unlock, 'Unlock the SimpleDB lock for Terraform state'
 end
 
 Trollop.educate unless opts.value?(true)
@@ -33,6 +34,8 @@ begin
     @dome.state.s3_state
   elsif opts[:output]
     @dome.output
+  elsif opts[:unlock]
+    @dome.purge_locks
   end
 rescue Interrupt
   puts "\ndome execution interrupted!".colorize(:red)

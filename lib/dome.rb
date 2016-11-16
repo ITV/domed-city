@@ -4,6 +4,7 @@ require 'colorize'
 require 'fileutils'
 require 'yaml'
 require 'hiera'
+require 'sdb_lock'
 
 require 'dome/settings'
 require 'dome/version'

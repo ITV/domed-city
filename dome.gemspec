@@ -23,8 +23,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '~> 0.37'
 
   spec.add_dependency 'trollop', '~> 2.1'
-  spec.add_dependency 'aws-sdk', '~> 2.1'
+  spec.add_dependency 'aws-sdk', '~> 2'
   spec.add_dependency 'colorize', '~> 0.7'
   spec.add_dependency 'hiera', '~> 1.3'
   spec.add_dependency 'hiera-eyaml', '~> 2.1'
+  spec.add_dependency 'sdb_lock', '~> 0.1.1'
 end

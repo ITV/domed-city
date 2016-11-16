@@ -14,8 +14,20 @@ module Dome
       "#{@environment.environment}-terraform.tfstate"
     end
 
+    def sdb_lock_name
+      state_file_name.gsub!(/(-|\.)/, '_')
+    end
+
+    def sdb_domain_name
+      state_bucket_name.gsub!(/(-|\.)/, '_')
+    end
+
     def s3_client
       @s3_client ||= Aws::S3::Client.new
+    end
+
+    def sdb_lock
+      @sdb_lock ||= SdbLock.new(sdb_domain_name)
     end
 
     def list_buckets
