@@ -1,3 +1,8 @@
+# 7.1.0
+FEATURES:
+- Pin to Ruby 2.7.1
+- Update vulnerable Rake
+
 # 7.0.3
 FEATURES:
 - Allow dome to use `params/env.tf` from the environment level when running on new run-level `services`
