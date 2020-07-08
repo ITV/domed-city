@@ -1,3 +1,11 @@
+# 8.0.0
+
+BREAKING CHANGES:
+- Remove `aws_assume_role` gem
+- Use `aws-vault` for assuming role
+  - Install it separately: https://github.com/99designs/aws-vault
+  - New AWS config format: Uses `<product>-<ecosysyem>-[dev|pe|root]` profile names
+
 # 7.1.0
 FEATURES:
 - Pin to Ruby 2.7.1
@@ -10,7 +18,7 @@ FEATURES:
 # 7.0.2
 FEATURES:
 - Add `service` level where a business service can be defined within `<product>-infra/terraform/<product>-<ecosystem>/<environment>/<services>/<serviceX>`. This ensures a one services AWS S3 bucket with multiple uniquely named terraform state files.
-- Add explicit validation for `services` and `roles` levels. 
+- Add explicit validation for `services` and `roles` levels.
 
 `NOTE: Do not use v7.0.0 or v7.0.1 as v7.0.2 contains the necessary incremental fixes.`
 

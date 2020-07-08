@@ -90,15 +90,12 @@ module Dome
         account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
-        @environment.unset_aws_keys
         @environment.aws_credentials
       when 'ecosystem'
         puts '--- AWS credentials for accessing ecosystem state ---'
-        @environment.unset_aws_keys
         @environment.aws_credentials
       when 'product'
         puts '--- AWS credentials for accessing product state ---'
-        @environment.unset_aws_keys
         @environment.aws_credentials
       when 'roles'
         puts '--- AWS credentials for accessing roles state ---'
@@ -106,7 +103,6 @@ module Dome
         account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
-        @environment.unset_aws_keys
         @environment.aws_credentials
       when 'services'
         puts '--- AWS credentials for accessing services state ---'
@@ -114,7 +110,6 @@ module Dome
         account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
-        @environment.unset_aws_keys
         @environment.aws_credentials
       when /^secrets-/
         puts '--- AWS credentials for accessing secrets state ---'
@@ -122,7 +117,6 @@ module Dome
         account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
-        @environment.unset_aws_keys
         @environment.aws_credentials
 
         puts '--- Vault login ---'
@@ -285,7 +279,6 @@ module Dome
     end
 
     def spawn_environment_shell
-      @environment.unset_aws_keys
       @environment.aws_credentials
       @secrets.secret_env_vars
 
