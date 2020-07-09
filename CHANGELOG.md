@@ -6,6 +6,7 @@ BREAKING CHANGES:
   - Install it separately: https://github.com/99designs/aws-vault
   - New AWS config format: Uses `<product>-<ecosysyem>-[dev|pe|root]` profile names
   - If you want to use `itv-dev` role by default put `export ITV_DEV=true` into your shell's rc file
+  - To skip invoking `aws-vault` run `export FREEZE_AWS_ENVVAR=true`
 
 # 7.1.0
 FEATURES:
