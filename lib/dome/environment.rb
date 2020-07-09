@@ -172,7 +172,7 @@ module Dome
       end
 
       profile_suffix = 'pe'
-      profile_suffix = 'dev' if ENV['DOME_DEV']
+      profile_suffix = 'dev' if ENV['ITV_DEV']
       profile_suffix = 'root' if @sudo
 
       profile = "#{account}-#{profile_suffix}"
