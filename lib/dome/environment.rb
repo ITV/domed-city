@@ -177,7 +177,9 @@ module Dome
 
       profile = "#{account}-#{profile_suffix}"
       cmd = "aws-vault exec #{profile} -- env"
-      output, status = Open3.capture2(cmd)
+      last_stdout, wait_threads = Open3.pipeline_r(cmd)
+      output = last_stdout.read
+      status = wait_threads.first.value
 
       unless status.success?
         puts output.colorize(:red)
