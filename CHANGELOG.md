@@ -7,6 +7,9 @@ BREAKING CHANGES:
   - New AWS config format: Uses `<product>-<ecosysyem>-[dev|pe|root]` profile names
   - If you want to use `itv-dev` role by default put `export ITV_DEV=true` into your shell's rc file
   - To skip invoking `aws-vault` run `export FREEZE_AWS_ENVVAR=true`
+- To use Yubikey for MFA, set the following environment variable (with your email!):
+  - `export YUBIKEY_MFA='Amazon Web Services:first.last@itv.com@itv-root'`
+  - you must have ykman installed for this to work: https://developers.yubico.com/yubikey-manager/
 
 # 7.1.0
 FEATURES:
