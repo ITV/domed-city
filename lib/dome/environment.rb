@@ -171,13 +171,27 @@ module Dome
         return
       end
 
+      if ENV['YUBIKEY_MFA']
+        cmd_yubikey = "ykman oath code --single '#{ENV['YUBIKEY_MFA']}'"
+        last_stdout, wait_threads = Open3.pipeline_r(cmd_yubikey)
+        mfa = last_stdout.read
+        status = wait_threads.first.value
+
+        unless status.success?
+          puts mfa.colorize(:red)
+          raise 'Unable to assume role'
+        end
+      end
+
       profile_suffix = 'pe'
       profile_suffix = 'dev' if ENV['ITV_DEV']
       profile_suffix = 'root' if @sudo
-
       profile = "#{account}-#{profile_suffix}"
-      cmd = "aws-vault exec #{profile} -- env"
-      last_stdout, wait_threads = Open3.pipeline_r(cmd)
+
+      cmd_vault = "aws-vault exec #{profile} -- env"
+      cmd_vault = "aws-vault exec #{profile} -t #{mfa.strip} -- env" if ENV['YUBIKEY_MFA']
+
+      last_stdout, wait_threads = Open3.pipeline_r(cmd_vault)
       output = last_stdout.read
       status = wait_threads.first.value
 
