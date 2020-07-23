@@ -168,7 +168,6 @@ module Dome
 
       if ENV['FREEZE_AWS_ENVVAR']
         puts '$FREEZE_AWS_ENVVAR is set. Leaving AWS environment variables unchanged.'
-        ENV['AWS_WEB_IDENTITY_TOKEN_FILE'] = env['AWS_WEB_IDENTITY_TOKEN_FILE']
         return
       end
 
