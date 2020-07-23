@@ -7,3 +7,4 @@ BREAKING:
 
 BUGFIX:
 - Fix zip file open for use in containers
+- Add AWS_WEB_IDENTITY_TOKEN_FILE envar for use in containers
