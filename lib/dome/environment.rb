@@ -2,6 +2,8 @@
 
 # This class represents the current directory
 
+require 'open3'
+
 module Dome
   class Environment
     attr_reader :environment, :account, :settings, :services
@@ -161,55 +163,52 @@ module Dome
       ecosystems.values.flatten
     end
 
-    def unset_aws_keys
-      if ENV['FREEZE_AWS_ENVVAR']
-        puts '$FREEZE_AWS_ENVVAR is set. Leaving AWS environment variables unchanged.'
-      else
-        puts '[*] Unsetting AWS environment variables from the shell to make sure we are using the correct'\
-        'assumed roles credentials'
-        ENV['AWS_ACCESS_KEY'] = nil
-        ENV['AWS_SECRET_KEY'] = nil
-        ENV['AWS_SECRET_ACCESS_KEY'] = nil
-        ENV['AWS_ACCESS_KEY_ID'] = nil
-        ENV['AWS_SESSION_TOKEN'] = nil
-      end
-    end
-
-    def export_aws_keys(assumed_role)
-      if ENV['FREEZE_AWS_ENVVAR']
-        puts '$FREEZE_AWS_ENVVAR is set. Leaving AWS environment variables unchanged.'
-      else
-        puts '[*] Exporting temporary credentials to environment variables '\
-        "#{'AWS_ACCESS_KEY_ID'.colorize(:green)}, #{'AWS_SECRET_ACCESS_KEY'.colorize(:green)}"\
-        " and #{'AWS_SESSION_TOKEN'.colorize(:green)}."
-        ENV['AWS_ACCESS_KEY_ID'] = assumed_role.credentials.access_key_id
-        ENV['AWS_SECRET_ACCESS_KEY'] = assumed_role.credentials.secret_access_key
-        ENV['AWS_SESSION_TOKEN'] = assumed_role.credentials.session_token
-        puts ''
-      end
-    end
-
     def aws_credentials
       puts "[*] Attempting to assume the role defined by your profile for #{@account.colorize(:green)}."
-      role_opts = { profile: account, role_session_name: account, use_mfa: true }
 
-      if @sudo
-        account_id = @settings.parse['aws'][@ecosystem.to_s]['account_id'].to_s
-        role_opts[:role_arn] = "arn:aws:iam::#{account_id}:role/itv-root"
+      if ENV['FREEZE_AWS_ENVVAR']
+        puts '$FREEZE_AWS_ENVVAR is set. Leaving AWS environment variables unchanged.'
+        return
       end
 
-      begin
-        assumed_role = AwsAssumeRole::DefaultProvider.new(role_opts).resolve
-      rescue StandardError => e
-        raise "[!] Unable to assume role, possibly yubikey related: #{e}".colorize(:red) \
+      if ENV['YUBIKEY_MFA']
+        cmd_yubikey = "ykman oath code --single '#{ENV['YUBIKEY_MFA']}'"
+        last_stdout, wait_threads = Open3.pipeline_r(cmd_yubikey)
+        mfa = last_stdout.read
+        status = wait_threads.first.value
+
+        unless status.success?
+          puts mfa.colorize(:red)
+          raise 'Unable to assume role'
+        end
       end
 
-      if assumed_role.nil?
-        raise "[!] Failed to find assume role details for #{role_opts[:profile]}" \
-              ' - check your ~/.aws/config file'.colorize(:red)
+      profile_suffix = 'pe'
+      profile_suffix = 'dev' if ENV['ITV_DEV']
+      profile_suffix = 'root' if @sudo
+      profile = "#{account}-#{profile_suffix}"
+
+      cmd_vault = "aws-vault exec #{profile} -- env"
+      cmd_vault = "aws-vault exec #{profile} -t #{mfa.strip} -- env" if ENV['YUBIKEY_MFA']
+
+      last_stdout, wait_threads = Open3.pipeline_r(cmd_vault)
+      output = last_stdout.read
+      status = wait_threads.first.value
+
+      unless status.success?
+        puts output.colorize(:red)
+        raise 'Unable to assume role'
       end
 
-      export_aws_keys(assumed_role)
+      env = output.split("\n").map { |var| Hash[*var.split('=', 2)] }.reduce({}, &:merge)
+
+      puts '[*] Exporting temporary credentials to environment variables '\
+      "#{'AWS_ACCESS_KEY_ID'.colorize(:green)}, #{'AWS_SECRET_ACCESS_KEY'.colorize(:green)}"\
+      " and #{'AWS_SESSION_TOKEN'.colorize(:green)}."
+      ENV['AWS_ACCESS_KEY_ID'] = env['AWS_ACCESS_KEY_ID']
+      ENV['AWS_SECRET_ACCESS_KEY'] = env['AWS_SECRET_ACCESS_KEY']
+      ENV['AWS_SESSION_TOKEN'] = env['AWS_SESSION_TOKEN']
+      puts ''
     end
 
     def valid_account?(account_name)
