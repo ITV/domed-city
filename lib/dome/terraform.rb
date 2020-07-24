@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'zip'
+require 'open-uri'
 
 module Dome
   class Terraform
@@ -323,7 +324,7 @@ module Dome
 
       FileUtils.makedirs(dir, mode: 0o0755)
 
-      content = URI.parse(uri).open
+      content = URI.parse(uri).read
       Zip::File.open_buffer(content) do |zip|
         zip.each do |entry|
           entry_file = File.join(dir, entry.name)
