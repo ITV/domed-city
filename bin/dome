@@ -29,6 +29,7 @@ end
 Optimist.educate unless opts.value?(true)
 
 @dome = Dome::Terraform.new(sudo: opts[:sudo])
+@dome.validate_tf_version
 
 if opts[:environment]
   puts '--- Spawning shell ---'
@@ -37,7 +38,6 @@ if opts[:environment]
   exit 0
 end
 
-@dome.validate_tf_version
 @dome.validate_environment
 
 begin
