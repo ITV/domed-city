@@ -37,6 +37,7 @@ if opts[:environment]
   exit 0
 end
 
+@dome.validate_tf_version
 @dome.validate_environment
 
 begin

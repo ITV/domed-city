@@ -164,6 +164,22 @@ module Dome
     end
     # rubocop:enable Metrics/PerceivedComplexity
 
+    def validate_tf_version
+      infra_version_file = File.join(@environment.settings.project_root, '.terraform-version')
+      raise "#{infra_version_file} does not exist. Exiting." unless File.exist? infra_version_file
+
+      infra_version = File.read(infra_version_file).strip
+      tf_version_output = command_output('terraform --version', '[!] Could not get terraform version')
+      tf_version = tf_version_output[/Terraform v(.*)$/,1]
+      if tf_version != infra_version
+        error_message = "\n[!] terraform binary version does not match version specified in .terraform-version\n"
+        error_message += "      terraform binary version: #{tf_version}\n"
+        error_message += "      .terraform-version:       #{infra_version}\n"
+        error_message += "    Make sure that you are using tfenv to manage terraform versions"
+        raise error_message
+      end
+    end
+
     def plan
       puts '--- Decrypting hiera secrets and pass them as TF_VARs ---'
       @secrets.secret_env_vars
