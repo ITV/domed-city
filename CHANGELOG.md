@@ -1,3 +1,7 @@
+# 9.1.0
+FEATURE:
+- Check terraform version against .terraform-version before running
+
 # 9.0.0
 BREAKING:
 
