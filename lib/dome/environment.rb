@@ -200,7 +200,7 @@ module Dome
         raise 'Unable to assume role'
       end
 
-      env = output.split("\n").map { |var| Hash[*var.split('=', 2)] }.reduce({}, &:merge)
+      env = output.split("\n").grep(/^AWS/).map { |var| Hash[*var.split('=', 2)] }.reduce({}, &:merge)
 
       puts '[*] Exporting temporary credentials to environment variables '\
       "#{'AWS_ACCESS_KEY_ID'.colorize(:green)}, #{'AWS_SECRET_ACCESS_KEY'.colorize(:green)}"\
