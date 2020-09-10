@@ -32,6 +32,16 @@ module Dome
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
         puts "[*] S3 object name: #{@state.state_file_name.colorize(:green)}"
         puts
+      when 'ecoroles'
+        @environment = Dome::Environment.new
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.level}-plan.tf"
+
+        puts '--- Ecoroles terraform state location ---'
+        puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
+        puts "[*] S3 object name: #{@state.state_file_name.colorize(:green)}"
+        puts
       when 'product'
         @environment = Dome::Environment.new
         @secrets     = Dome::Secrets.new(@environment)
@@ -84,6 +94,7 @@ module Dome
     # FIXME: Simplify *validate_environment*
     # rubocop:disable Metrics/PerceivedComplexity
     def validate_environment
+      puts "DEBUG: LEVEL: #{level}"
       case level
       when 'environment'
         puts '--- AWS credentials for accessing environment state ---'
@@ -94,6 +105,9 @@ module Dome
         @environment.aws_credentials
       when 'ecosystem'
         puts '--- AWS credentials for accessing ecosystem state ---'
+        @environment.aws_credentials
+      when 'ecoroles'
+        puts '--- AWS credentials for accessing ecosystem roles state ---'
         @environment.aws_credentials
       when 'product'
         puts '--- AWS credentials for accessing product state ---'
@@ -232,6 +246,11 @@ module Dome
         failure_message = '[!] something went wrong when creating the environment TF plan'
         execute_command(command, failure_message)
       when 'ecosystem'
+        FileUtils.mkdir_p 'plans'
+        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        failure_message = '[!] something went wrong when creating the ecosystem TF plan'
+        execute_command(command, failure_message)
+      when 'ecoroles'
         FileUtils.mkdir_p 'plans'
         command         = "terraform plan -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the ecosystem TF plan'

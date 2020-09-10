@@ -43,6 +43,11 @@ module Dome
         @account                = directories[-1]
         @services               = nil
 
+      when 'ecoroles'
+        @environment            = nil
+        @account                = directories[-2]
+        @services               = nil
+
       when 'product'
         @environment            = nil
         @account                = "#{@product}-prd"
@@ -138,6 +143,8 @@ module Dome
       case level
       when 'ecosystem'
         directories[-1].split('-')[-1]
+      when 'ecoroles'
+        directories[-2].split('-')[-1]
       when 'environment'
         directories[-2].split('-')[-1]
       when 'product'
@@ -164,7 +171,6 @@ module Dome
     end
 
     def aws_credentials
-      puts "[*] Attempting to assume the role defined by your profile for #{@account.colorize(:green)}."
 
       if ENV['FREEZE_AWS_ENVVAR']
         puts '$FREEZE_AWS_ENVVAR is set. Leaving AWS environment variables unchanged.'
