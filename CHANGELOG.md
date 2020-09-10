@@ -1,3 +1,7 @@
+# 9.1.1
+BUGFIX:
+- Handle outputs of `aws-vault` on Linux clients
+
 # 9.1.0
 FEATURE:
 - Check terraform version against .terraform-version before running
