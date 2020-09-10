@@ -94,7 +94,6 @@ module Dome
     # FIXME: Simplify *validate_environment*
     # rubocop:disable Metrics/PerceivedComplexity
     def validate_environment
-      puts "DEBUG: LEVEL: #{level}"
       case level
       when 'environment'
         puts '--- AWS credentials for accessing environment state ---'
