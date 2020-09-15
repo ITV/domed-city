@@ -6,11 +6,12 @@ module Dome
     # rubocop:disable Metrics/PerceivedComplexity
     def level
       directories = Dir.pwd.split('/')
-
       if directories[-1] == 'terraform'
         'product'
       elsif directories[-2] == 'terraform'
         'ecosystem'
+      elsif directories[-3] == 'terraform' && directories[-1] == 'ecoroles'
+        'ecoroles'
       elsif directories[-3] == 'terraform'
         'environment'
       elsif directories[-4] == 'terraform' && directories[-1] == 'roles'

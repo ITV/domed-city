@@ -1,3 +1,7 @@
+# 9.2.0
+FEATURE:
+- Add `ecoroles` level at the ecosystem
+
 # 9.1.1
 BUGFIX:
 - Handle outputs of `aws-vault` on Linux clients
