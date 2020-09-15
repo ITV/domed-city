@@ -252,7 +252,7 @@ module Dome
       when 'ecoroles'
         FileUtils.mkdir_p 'plans'
         command         = "terraform plan -refresh=true -out=#{@plan_file}"
-        failure_message = '[!] something went wrong when creating the ecosystem TF plan'
+        failure_message = '[!] something went wrong when creating the ecoroles TF plan'
         execute_command(command, failure_message)
       when 'product'
         FileUtils.mkdir_p 'plans'
