@@ -93,7 +93,7 @@ module Dome
         if hiera_lookup
           puts "[*] Setting #{terraform_env_var.colorize(:green)}."
         else
-          puts "[!] Hiera lookup failed for '#{val}', so #{terraform_env_var} was not set.".colorize(:red)
+          puts "[!] Hiera lookup failed for '#{val}', so #{terraform_env_var} was not set.".colorize(:yellow)
         end
       end
 
