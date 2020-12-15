@@ -23,7 +23,7 @@ describe Dome do
   it 'outputs the correct error message for a failed hiera lookup' do
     vars = { 'foo' => 'bar' }
     allow(hiera).to receive(:lookup).and_return(nil)
-    error_message = "\e[0;31;49m[!] Hiera lookup failed for 'bar', so TF_VAR_foo was not set.\e[0m\n\n"
+    error_message = "\e[0;33;49m[!] Hiera lookup failed for 'bar', so TF_VAR_foo was not set.\e[0m\n\n"
     expect { hiera.secret_env_vars(vars) }.to output(error_message).to_stdout
   end
 end

@@ -1,3 +1,7 @@
+# 9.2.1
+BUGFIX:
+- Only warn on missing hiera lookups
+
 # 9.2.0
 FEATURE:
 - Add `ecoroles` level at the ecosystem
