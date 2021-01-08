@@ -1,3 +1,8 @@
+# 10.0.0
+BREAKING:
+  - Update the providers download to support the new local provider path. Also provides a second compatibility provider dir for when migrating from tf1
+2 -> tf13. This version should only be used when updating to TF13 (scandium release)
+
 # 9.2.1
 BUGFIX:
 - Only warn on missing hiera lookups
