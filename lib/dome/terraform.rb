@@ -352,13 +352,13 @@ module Dome
       end
 
       uri = "https://releases.hashicorp.com/terraform-provider-#{name}/#{version}/terraform-provider-#{name}_#{version}_#{arch}.zip"
-      dir = File.join(Dir.home, '.terraform.d', 'providers', name, version, 'registry.terraform.io', 'hashicorp', name, version, arch)
+      dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version, 'registry.terraform.io', 'hashicorp', name, version, arch)
 
       # This compat_dir is in place to provide migration between tf12 -> tf13
-      compat_dir = File.join(Dir.home, '.terraform.d', 'providers', name, version, 'registry.terraform.io', '-', name, version, arch)
+      compat_dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version, 'registry.terraform.io', '-', name, version, arch)
 
       # The directory to search for the plugin
-      plugin_dir = File.join(Dir.home, '.terraform.d', 'providers', name, version)
+      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version)
       return plugin_dir unless Dir[dir].empty? || Dir[compat_dir].empty?
 
       [dir, compat_dir].each do |createdir| 
