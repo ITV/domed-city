@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Dome
-  VERSION = '9.2.1'
+  VERSION = '10.0.0'
 end

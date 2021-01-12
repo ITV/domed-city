@@ -352,22 +352,30 @@ module Dome
       end
 
       uri = "https://releases.hashicorp.com/terraform-provider-#{name}/#{version}/terraform-provider-#{name}_#{version}_#{arch}.zip"
-      dir = File.join(Dir.home, '.terraform.d', 'providers', name, version)
+      dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version, 'registry.terraform.io', 'hashicorp', name, version, arch)
 
-      return dir unless Dir[File.join(dir, '*')].empty? # Ruby >= 2.4: Dir.empty? dir
+      # This compat_dir is in place to provide migration between tf12 -> tf13
+      compat_dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version, 'registry.terraform.io', '-', name, version, arch)
 
-      FileUtils.makedirs(dir, mode: 0o0755)
+      # The directory to search for the plugin
+      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version)
+      return plugin_dir unless Dir[dir].empty? || Dir[compat_dir].empty?
 
-      content = URI.parse(uri).read
-      Zip::File.open_buffer(content) do |zip|
-        zip.each do |entry|
-          entry_file = File.join(dir, entry.name)
-          entry.extract(entry_file)
-          FileUtils.chmod(0o0755, entry_file)
+      [dir, compat_dir].each do |createdir| 
+        next unless Dir[createdir].empty?
+        FileUtils.makedirs(createdir, mode: 0o0755)
+
+        content = URI.parse(uri).read
+        Zip::File.open_buffer(content) do |zip|
+          zip.each do |entry|
+            entry_file = File.join(createdir, entry.name)
+            entry.extract(entry_file)
+            FileUtils.chmod(0o0755, entry_file)
+          end
         end
       end
 
-      dir
+      plugin_dir
     end
   end
 end
