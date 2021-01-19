@@ -1,3 +1,7 @@
+# 10.1.0
+FEATURE:
+  - Add terraform import option
+
 # 10.0.0
 BREAKING:
   - Update the providers download to support the new local provider path. Also provides a second compatibility provider dir for when migrating from tf1
