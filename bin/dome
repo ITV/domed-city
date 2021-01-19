@@ -20,6 +20,7 @@ opts = Optimist.options do
   opt :state, 'Synchronises the Terraform state'
   opt :output, 'Print all Terraform output variables'
   opt :statecmd, 'Wrapper arround terraform state', type: :strings
+  opt :import, 'Wrapper arround terraform import', type: :strings
   opt :refresh, 'Refresh the state'
   opt :console, 'Spawn terraform console'
   opt :sudo, 'Assume itv-root instead of the role specified in profile'
@@ -53,6 +54,8 @@ begin
     @dome.console
   elsif opts[:statecmd]
     @dome.statecmd(opts[:statecmd].join(' '))
+  elsif opts[:import]
+    @dome.import(opts[:import].join(' '))
   elsif opts[:state]
     @dome.state.s3_state
   elsif opts[:output]

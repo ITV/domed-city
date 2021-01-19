@@ -229,6 +229,17 @@ module Dome
       execute_command(command, failure_message)
     end
 
+    def import(arguments)
+      params = ''
+      case level
+      when 'environment', 'services'
+        params = " -var-file=params/env.tfvars"
+      end 
+      command         = "terraform import#{params} #{arguments}"
+      failure_message = "[!] something went wrong when doing terraform import #{arguments}"
+      execute_command(command, failure_message)
+    end
+
     def console
       @secrets.secret_env_vars
       command         = 'terraform console'
