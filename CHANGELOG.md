@@ -1,3 +1,7 @@
+# 10.1.1
+FEATURE:
+  - Load secrets into env vars for terraform import
+
 # 10.1.0
 FEATURE:
   - Add terraform import option
