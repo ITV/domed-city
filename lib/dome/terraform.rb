@@ -230,6 +230,7 @@ module Dome
     end
 
     def import(arguments)
+      @secrets.secret_env_vars
       params = ''
       case level
       when 'environment', 'services'
