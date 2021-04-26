@@ -177,7 +177,7 @@ module Dome
       list_output = list_last_stdout.read
       status = wait_threads.first.value
       unless status.success?
-        puts 'Could not determine AWS session time remaining. Continuuing anyway'.colorize(:red)
+        puts 'Could not determine AWS session time remaining. Continuing anyway'.colorize(:red)
         return true
       end
 
