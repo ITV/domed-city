@@ -1,6 +1,6 @@
 # 10.2.0
 FEATURE:
-  - Check AWS session time before running. If the remaining session time is <20mins then clear the session and get a new one. If less than 40 minutes, check if the user wants to clear the session before continuuing. This is for the case of long-running applys such as EKS upgrades.
+  - Check AWS session time before running. If the remaining session time is <20 minutes then clear the session and get a new one. If less than 40 minutes, check if the user wants to clear the session before continuing. This is for the case of long-running applys such as EKS upgrades.
 
 # 10.1.1
 FEATURE:
