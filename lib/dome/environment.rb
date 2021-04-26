@@ -3,6 +3,7 @@
 # This class represents the current directory
 
 require 'open3'
+require 'io/console'
 
 module Dome
   class Environment
@@ -170,6 +171,52 @@ module Dome
       ecosystems.values.flatten
     end
 
+    def check_session_time(profile)
+      # Check remaining session time
+      list_last_stdout, wait_threads = Open3.pipeline_r("aws-vault list")
+      list_output = list_last_stdout.read
+      status = wait_threads.first.value
+      unless status.success?
+        puts 'Could not determine AWS session time remaining. Continuuing anyway'.colorize(:red)
+        return true
+      end
+
+      session_left = ''
+      list_output.each_line do |line|
+        if line.split[0] == profile
+          session_left = line.split[2]
+        end
+      end
+
+      if session_left.start_with?('sts.AssumeRole:')
+        timeleft = session_left.split(':')[1]
+        timeleft = "0m#{timeleft}" if ! timeleft.include? 'm'
+        timeleft = "0h#{timeleft}" if ! timeleft.include? 'h'
+        timeleft = '0h0m0s' if timeleft.start_with?('-')
+        secs_left = Time.parse(timeleft) - Time.parse('0h0m0s')
+        if secs_left < 1200 # 20 mins
+          puts 'Less than 20 minutes AWS session time remaining. Clearing session'.colorize(:red)
+          return false
+        end
+        if secs_left < 2400 # 40 mins
+          puts 'Less that 40 minutes AWS session time remaining. Start a new session(y|N)?'.colorize(:yellow)
+          prompt = STDIN.getch
+          return false if prompt.downcase == 'y'
+        end
+      end
+
+      return true
+    end
+
+    def clear_session(profile)
+      stdout, wait_threads = Open3.pipeline_r("aws-vault clear #{profile}")
+      status = wait_threads.first.value
+      unless status.success?
+        puts output.colorize(:red)
+        raise 'Unable to clear aws-vault session'
+      end
+    end
+
     def aws_credentials
 
       if ENV['FREEZE_AWS_ENVVAR']
@@ -197,13 +244,18 @@ module Dome
       cmd_vault = "aws-vault exec #{profile} -- env"
       cmd_vault = "aws-vault exec #{profile} -t #{mfa.strip} -- env" if ENV['YUBIKEY_MFA']
 
-      last_stdout, wait_threads = Open3.pipeline_r(cmd_vault)
-      output = last_stdout.read
-      status = wait_threads.first.value
+      valid_session = false
+      while !valid_session do
+        last_stdout, wait_threads = Open3.pipeline_r(cmd_vault)
+        output = last_stdout.read
+        status = wait_threads.first.value
 
-      unless status.success?
-        puts output.colorize(:red)
-        raise 'Unable to assume role'
+        unless status.success?
+          puts output.colorize(:red)
+          raise 'Unable to assume role'
+        end
+        valid_session = check_session_time(profile)
+        clear_session(profile) unless valid_session
       end
 
       env = output.split("\n").grep(/^AWS/).map { |var| Hash[*var.split('=', 2)] }.reduce({}, &:merge)
