@@ -40,7 +40,7 @@ module Dome
         @services               = nil
 
       when 'ecosystem'
-        @environment            = directories[-1].split('-')[-1]
+        @environment            = nil
         @account                = directories[-1]
         @services               = nil
 
