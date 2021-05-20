@@ -1,6 +1,12 @@
+# 10.4.0
+FEATURE:
+  - Show remaining seconds left on session
+  - Fix typo
+
 # 10.3.0
 FEATURE:
   - Export Main Environment when running actions at Ecosystem level to support the environment to ecosystem migration
+
 # 10.2.0
 FEATURE:
   - Check AWS session time before running. If the remaining session time is <20 minutes then clear the session and get a new one. If less than 40 minutes, check if the user wants to clear the session before continuing. This is for the case of long-running applys such as EKS upgrades.
