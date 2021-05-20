@@ -195,7 +195,7 @@ module Dome
         timeleft = '0h0m0s' if timeleft.start_with?('-')
         secs_left = Time.parse(timeleft) - Time.parse('0h0m0s')
         if secs_left < 1200 # 20 mins
-          puts 'Less than 20 minutes AWS session time remaining (#{Time.at(secs_left).utc.strftime("%Mm %Ss")}). Clearing session'.colorize(:red)
+          puts "Less than 20 minutes AWS session time remaining (#{Time.at(secs_left).utc.strftime("%Mm %Ss")}). Clearing session".colorize(:red)
           return false
         end
         if secs_left < 2400 # 40 mins
