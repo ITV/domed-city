@@ -235,7 +235,7 @@ module Dome
       case level
       when 'environment', 'services'
         params = " -var-file=params/env.tfvars"
-      end 
+      end
       command         = "terraform import#{params} #{arguments}"
       failure_message = "[!] something went wrong when doing terraform import #{arguments}"
       execute_command(command, failure_message)
@@ -345,15 +345,15 @@ module Dome
 
       return unless providers
 
-      providers.each do |name, version|
-        plugin_dirs << install_provider(name, version)
+      providers['provider'].each do |provider|
+        plugin_dirs << install_provider(provider)
       end
 
       plugin_dirs.map { |dir| "-plugin-dir #{dir}" }.join(' ')
     end
 
-    def install_provider(name, version)
-      puts "Installing provider #{name}:#{version} ...".colorize(:green)
+    def install_provider(provider)
+      puts "Installing provider #{provider['name']}:#{provider['version']} ...".colorize(:green)
 
       if RUBY_PLATFORM =~ /linux/
         arch = 'linux_amd64'
@@ -363,17 +363,17 @@ module Dome
         raise 'Invalid platform, only linux and darwin are supported.'
       end
 
-      uri = "https://releases.hashicorp.com/terraform-provider-#{name}/#{version}/terraform-provider-#{name}_#{version}_#{arch}.zip"
-      dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version, 'registry.terraform.io', 'hashicorp', name, version, arch)
+      uri = "https://releases.hashicorp.com/terraform-provider-#{provider['name']}/#{provider['version']}/terraform-provider-#{provider['name']}_#{provider['version']}_#{arch}.zip"
+      dir = File.join(Dir.home, '.terraform.d', 'providercache', provider['name'], provider['version'], 'registry.terraform.io', provider['namespace'], provider['name'], provider['version'], arch)
 
       # This compat_dir is in place to provide migration between tf12 -> tf13
-      compat_dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version, 'registry.terraform.io', '-', name, version, arch)
+      compat_dir = File.join(Dir.home, '.terraform.d', 'providercache', provider['name'], provider['version'], 'registry.terraform.io', '-', provider['name'], provider['version'], arch)
 
       # The directory to search for the plugin
-      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache', name, version)
+      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache', provider['name'], provider['version'])
       return plugin_dir unless Dir[dir].empty? || Dir[compat_dir].empty?
 
-      [dir, compat_dir].each do |createdir| 
+      [dir, compat_dir].each do |createdir|
         next unless Dir[createdir].empty?
         FileUtils.makedirs(createdir, mode: 0o0755)
 
