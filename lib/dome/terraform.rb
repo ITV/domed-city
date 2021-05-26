@@ -199,6 +199,7 @@ module Dome
       puts '--- Deleting old plans'
       # delete_terraform_directory # Don't delete it
       delete_plan_file
+      delete_tf_lock_file
       @state.s3_state
       puts
       puts '--- Terraform init & plan ---'
@@ -303,6 +304,12 @@ module Dome
     def delete_plan_file
       puts '[*] Deleting previous terraform plan ...'.colorize(:green)
       FileUtils.rm_f @plan_file
+    end
+
+    def delete_tf_lock_file
+      puts '[*] Deleting previous terraform lock file ...'.colorize(:green)
+      terraform_lock_file = '.terraform.lock.hcl'
+      FileUtils.rm_f terraform_lock_file
     end
 
     def init
