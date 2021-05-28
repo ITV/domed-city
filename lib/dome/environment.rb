@@ -12,7 +12,6 @@ module Dome
     include Dome::Level
 
     def initialize(directories = Dir.pwd.split('/'))
-      ENV['AWS_DEFAULT_REGION'] = 'eu-west-1'
 
       puts <<-'MSG'
              _
@@ -21,7 +20,7 @@ module Dome
         | (_| | (_) | | | | | |  __/
          \__,_|\___/|_| |_| |_|\___|
 
-        Wrapping terraform since 2015
+        Wrapping terraform since 2015 fooooo!
       MSG
 
       puts ''
