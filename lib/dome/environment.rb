@@ -12,6 +12,8 @@ module Dome
     include Dome::Level
 
     def initialize(directories = Dir.pwd.split('/'))
+      ENV['AWS_REGION'] = 'eu-west-1'
+
       puts <<-'MSG'
              _
           __| | ___  _ __ ___   ___
