@@ -1,6 +1,7 @@
-# 10.4.1
-BUGFIX:
-  - Set `AWS_REGION` envvar rather than `AWS_DEFAULT_REGION`
+# 11.0.0
+BREAKING CHANGE:
+  - Do not set `AWS_DEFAULT_REGION`
+  - You now need to ensure that `region = eu-west-1` is added to your `~/.aws/config` profiles (you can regenerate using the latest [aws-profile-generator](https://github.com/ITV/cp-tools/blob/master/bin/aws-profile-generator.rb).
     - this is to fix a [provider bug](https://github.com/hashicorp/terraform-provider-aws/issues/5981) that prevents you from creating S3 buckets outside of `eu-west-1`
 
 # 10.4.0
