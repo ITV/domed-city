@@ -4,6 +4,11 @@ BREAKING:
   - Remove TF lock file when running TF plan
   - This version should only be used when updating to TF14 (chromium release)
 
+# 10.4.1
+BUGFIX:
+  - Set `AWS_REGION` envvar rather than `AWS_DEFAULT_REGION`
+    - this is to fix a [provider bug](https://github.com/hashicorp/terraform-provider-aws/issues/5981) that prevents you from creating S3 buckets outside of `eu-west-1`
+
 # 10.4.0
 FEATURE:
   - Show remaining seconds left on session
