@@ -1,3 +1,9 @@
+# 11.0.0
+BREAKING:
+  - Update providers for namespace functionality as part of TF14 update
+  - Remove TF lock file when running TF plan
+  - This version should only be used when updating to TF14 (chromium release)
+
 # 10.4.0
 FEATURE:
   - Show remaining seconds left on session
