@@ -1,9 +1,0 @@
-BREAKING:
-- Upgrade aws-sdk to v3
-- This requires the following updates in your infra's Gemfile:
-  - Update: `gem 'aws-sdk-core', '~> 3'`
-  - Update lugus gem to at least 'v9.0.0'
-  - Remove: `gem 'aws_assume_role', '1.2.1'`
-
-BUGFIX:
-- Fix zip file open for use in containers

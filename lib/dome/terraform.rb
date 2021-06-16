@@ -371,26 +371,21 @@ module Dome
       end
 
       uri = "https://releases.hashicorp.com/terraform-provider-#{provider['name']}/#{provider['version']}/terraform-provider-#{provider['name']}_#{provider['version']}_#{arch}.zip"
-      dir = File.join(Dir.home, '.terraform.d', 'providercache', provider['name'], provider['version'], 'registry.terraform.io', provider['namespace'], provider['name'], provider['version'], arch)
+      dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', provider['name'], provider['version'], 'registry.terraform.io', provider['namespace'], provider['name'], provider['version'], arch)
 
-      # This compat_dir is in place to provide migration between tf12 -> tf13
-      compat_dir = File.join(Dir.home, '.terraform.d', 'providercache', provider['name'], provider['version'], 'registry.terraform.io', '-', provider['name'], provider['version'], arch)
 
       # The directory to search for the plugin
-      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache', provider['name'], provider['version'])
-      return plugin_dir unless Dir[dir].empty? || Dir[compat_dir].empty?
+      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', provider['name'], provider['version'])
+      return plugin_dir unless Dir[dir].empty?
 
-      [dir, compat_dir].each do |createdir|
-        next unless Dir[createdir].empty?
-        FileUtils.makedirs(createdir, mode: 0o0755)
+      FileUtils.makedirs(dir, mode: 0o0755)
 
-        content = URI.parse(uri).read
-        Zip::File.open_buffer(content) do |zip|
-          zip.each do |entry|
-            entry_file = File.join(createdir, entry.name)
-            entry.extract(entry_file)
-            FileUtils.chmod(0o0755, entry_file)
-          end
+      content = URI.parse(uri).read
+      Zip::File.open_buffer(content) do |zip|
+        zip.each do |entry|
+          entry_file = File.join(dir, entry.name)
+          entry.extract(entry_file)
+          FileUtils.chmod(0o0755, entry_file)
         end
       end
 

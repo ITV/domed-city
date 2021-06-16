@@ -1,3 +1,9 @@
+# 11.1.0
+FEATURE:
+  - Remove old tf12-13 upgrade provider cache
+BUGFIX:
+  - Use new providercache dir for tf14 onwards
+
 # 11.0.0
 BREAKING:
   - Update providers for namespace functionality as part of TF14 update
