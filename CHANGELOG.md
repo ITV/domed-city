@@ -1,4 +1,6 @@
-# 11.0.1
+# 11.1.0
+FEATURE:
+  - Remove old tf12-13 upgrade provider cache
 BUGFIX:
   - Use new providercache dir for tf14 onwards
 

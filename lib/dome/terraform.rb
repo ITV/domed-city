@@ -378,7 +378,6 @@ module Dome
       plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', provider['name'], provider['version'])
       return plugin_dir unless Dir[dir].empty?
 
-      next unless Dir[dir].empty?
       FileUtils.makedirs(dir, mode: 0o0755)
 
       content = URI.parse(uri).read
