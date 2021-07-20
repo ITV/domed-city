@@ -1,3 +1,8 @@
+# 12.0.0
+BREAKING:
+  - Add params folder at the ecosystem level. 
+  - This version should only be used when updating to the `iron` release
+
 # 11.1.0
 FEATURE:
   - Remove old tf12-13 upgrade provider cache
