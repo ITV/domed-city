@@ -1,3 +1,7 @@
+# 12.0.1
+PATCH:
+  - Check time left on sso CLI sessions
+
 # 12.0.0
 BREAKING:
   - Read params/env.tfvars at the ecosystem level. 

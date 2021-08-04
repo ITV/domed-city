@@ -188,7 +188,7 @@ module Dome
         end
       end
 
-      if session_left.start_with?('sts.AssumeRole:')
+      if session_left.start_with?('sts.AssumeRole:') || session_left.start_with?('sso.GetRoleCredentials:')
         timeleft = session_left.split(':')[1]
         timeleft = "0m#{timeleft}" if ! timeleft.include? 'm'
         timeleft = "0h#{timeleft}" if ! timeleft.include? 'h'
