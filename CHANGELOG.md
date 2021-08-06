@@ -1,3 +1,7 @@
+# 12.1.0
+FEATURES:
+  - Update the ecoroles config to use directory name `roles` at the ecosystem level
+
 # 12.0.1
 PATCH:
   - Check time left on sso CLI sessions

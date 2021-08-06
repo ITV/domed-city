@@ -10,7 +10,8 @@ module Dome
         'product'
       elsif directories[-2] == 'terraform'
         'ecosystem'
-      elsif directories[-3] == 'terraform' && directories[-1] == 'ecoroles'
+      elsif directories[-3] == 'terraform' && directories[-1] == 'roles'
+puts "YEA YEA"
         'ecoroles'
       elsif directories[-3] == 'terraform'
         'environment'
