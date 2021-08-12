@@ -38,7 +38,7 @@ module Dome
         @state       = Dome::State.new(@environment)
         @plan_file   = "plans/#{@environment.level}-plan.tf"
 
-        puts '--- Roles terraform state location ---'
+        puts '--- Ecoroles terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
         puts "[*] S3 object name: #{@state.state_file_name.colorize(:green)}"
         puts
