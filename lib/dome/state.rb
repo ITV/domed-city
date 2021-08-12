@@ -16,7 +16,7 @@ module Dome
       when 'ecosystem'
         "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}"
       when 'ecoroles'
-        "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-ecoroles"
+        "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-roles"
       when 'product'
         "itv-terraform-state-#{@environment.project}"
       when 'roles'
