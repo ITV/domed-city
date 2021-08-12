@@ -37,7 +37,7 @@ module Dome
       when 'ecosystem'
         "#{@environment.level}.tfstate"
       when 'ecoroles'
-        "roles.tfstate"
+        "#{@environment.level}.tfstate"
       when 'product'
         "#{@environment.level}.tfstate"
       when 'roles'
