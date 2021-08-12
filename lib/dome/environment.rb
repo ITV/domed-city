@@ -45,7 +45,7 @@ module Dome
         @services               = nil
 
       when 'ecoroles'
-        @environment            = directories[-2].split('-')[-2]
+        @environment            = directories[-2].split('-')[-1]
         @account                = directories[-2]
         @services               = nil
 
