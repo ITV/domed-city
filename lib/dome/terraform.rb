@@ -14,9 +14,9 @@ module Dome
       case level
       when 'environment'
         @environment = Dome::Environment.new
-        @secrets = Dome::Secrets.new(@environment)
-        @state = Dome::State.new(@environment)
-        @plan_file = "plans/#{@environment.account}-#{@environment.environment}-plan.tf"
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.account}-#{@environment.environment}-plan.tf"
 
         puts '--- Environment terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -24,9 +24,9 @@ module Dome
         puts
       when 'ecosystem'
         @environment = Dome::Environment.new
-        @secrets = Dome::Secrets.new(@environment)
-        @state = Dome::State.new(@environment)
-        @plan_file = "plans/#{@environment.level}-plan.tf"
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Ecosystem terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -34,9 +34,9 @@ module Dome
         puts
       when 'ecoroles'
         @environment = Dome::Environment.new
-        @secrets = Dome::Secrets.new(@environment)
-        @state = Dome::State.new(@environment)
-        @plan_file = "plans/#{@environment.level}-plan.tf"
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Ecoroles terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -44,9 +44,9 @@ module Dome
         puts
       when 'product'
         @environment = Dome::Environment.new
-        @secrets = Dome::Secrets.new(@environment)
-        @state = Dome::State.new(@environment)
-        @plan_file = "plans/#{@environment.level}-plan.tf"
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Product terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -54,9 +54,9 @@ module Dome
         puts
       when 'roles'
         @environment = Dome::Environment.new
-        @secrets = Dome::Secrets.new(@environment)
-        @state = Dome::State.new(@environment)
-        @plan_file = "plans/#{@environment.level}-plan.tf"
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Role terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -64,9 +64,9 @@ module Dome
         puts
       when 'services'
         @environment = Dome::Environment.new
-        @secrets = Dome::Secrets.new(@environment)
-        @state = Dome::State.new(@environment)
-        @plan_file = "plans/#{@environment.services}-plan.tf"
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.services}-plan.tf"
 
         puts '--- Services terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -74,9 +74,9 @@ module Dome
         puts
       when /^secrets-/
         @environment = Dome::Environment.new
-        @secrets = Dome::Secrets.new(@environment)
-        @state = Dome::State.new(@environment)
-        @plan_file = "plans/#{@environment.level}-plan.tf"
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Secrets terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -98,7 +98,7 @@ module Dome
       when 'environment'
         puts '--- AWS credentials for accessing environment state ---'
         environment = @environment.environment
-        account = @environment.account
+        account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
@@ -114,21 +114,21 @@ module Dome
       when 'roles'
         puts '--- AWS credentials for accessing roles state ---'
         environment = @environment.environment
-        account = @environment.account
+        account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
       when 'services'
         puts '--- AWS credentials for accessing services state ---'
         environment = @environment.environment
-        account = @environment.account
+        account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
       when /^secrets-/
         puts '--- AWS credentials for accessing secrets state ---'
         environment = @environment.environment
-        account = @environment.account
+        account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
@@ -382,10 +382,10 @@ module Dome
       end
 
       # provider metadata
-      name = provider['name']
-      version = provider['version']
+      name      = provider['name']
+      version   = provider['version']
       namespace = provider['namespace'] || 'hashicorp'
-      hostname = provider['hostname'] || 'registry.terraform.io'
+      hostname  = provider['hostname'] || 'registry.terraform.io'
 
       uri = "https://releases.hashicorp.com/terraform-provider-#{name}/#{version}/terraform-provider-#{name}_#{version}_#{arch}.zip"
       dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', name, version, hostname, namespace, name, version, arch)
