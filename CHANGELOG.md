@@ -1,3 +1,8 @@
+# 12.2.0
+FEATURES:
+  - support installing 3rd-party providers.
+  - support providing optional providers via a `.terraform-providers-local.yaml` file.
+
 # 12.1.0
 FEATURES:
   - Update the ecoroles config to use directory name `roles` at the ecosystem level
@@ -7,7 +12,7 @@ PATCH:
 
 # 12.0.0
 BREAKING:
-  - Read params/env.tfvars at the ecosystem level. 
+  - Read params/env.tfvars at the ecosystem level.
   - This version should only be used when updating to the `iron` release
 
 # 11.1.0
