@@ -14,9 +14,9 @@ module Dome
       case level
       when 'environment'
         @environment = Dome::Environment.new
-        @secrets     = Dome::Secrets.new(@environment)
-        @state       = Dome::State.new(@environment)
-        @plan_file   = "plans/#{@environment.account}-#{@environment.environment}-plan.tf"
+        @secrets = Dome::Secrets.new(@environment)
+        @state = Dome::State.new(@environment)
+        @plan_file = "plans/#{@environment.account}-#{@environment.environment}-plan.tf"
 
         puts '--- Environment terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -24,9 +24,9 @@ module Dome
         puts
       when 'ecosystem'
         @environment = Dome::Environment.new
-        @secrets     = Dome::Secrets.new(@environment)
-        @state       = Dome::State.new(@environment)
-        @plan_file   = "plans/#{@environment.level}-plan.tf"
+        @secrets = Dome::Secrets.new(@environment)
+        @state = Dome::State.new(@environment)
+        @plan_file = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Ecosystem terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -34,9 +34,9 @@ module Dome
         puts
       when 'ecoroles'
         @environment = Dome::Environment.new
-        @secrets     = Dome::Secrets.new(@environment)
-        @state       = Dome::State.new(@environment)
-        @plan_file   = "plans/#{@environment.level}-plan.tf"
+        @secrets = Dome::Secrets.new(@environment)
+        @state = Dome::State.new(@environment)
+        @plan_file = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Ecoroles terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -44,9 +44,9 @@ module Dome
         puts
       when 'product'
         @environment = Dome::Environment.new
-        @secrets     = Dome::Secrets.new(@environment)
-        @state       = Dome::State.new(@environment)
-        @plan_file   = "plans/#{@environment.level}-plan.tf"
+        @secrets = Dome::Secrets.new(@environment)
+        @state = Dome::State.new(@environment)
+        @plan_file = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Product terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -54,9 +54,9 @@ module Dome
         puts
       when 'roles'
         @environment = Dome::Environment.new
-        @secrets     = Dome::Secrets.new(@environment)
-        @state       = Dome::State.new(@environment)
-        @plan_file   = "plans/#{@environment.level}-plan.tf"
+        @secrets = Dome::Secrets.new(@environment)
+        @state = Dome::State.new(@environment)
+        @plan_file = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Role terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -64,9 +64,9 @@ module Dome
         puts
       when 'services'
         @environment = Dome::Environment.new
-        @secrets     = Dome::Secrets.new(@environment)
-        @state       = Dome::State.new(@environment)
-        @plan_file   = "plans/#{@environment.services}-plan.tf"
+        @secrets = Dome::Secrets.new(@environment)
+        @state = Dome::State.new(@environment)
+        @plan_file = "plans/#{@environment.services}-plan.tf"
 
         puts '--- Services terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -74,9 +74,9 @@ module Dome
         puts
       when /^secrets-/
         @environment = Dome::Environment.new
-        @secrets     = Dome::Secrets.new(@environment)
-        @state       = Dome::State.new(@environment)
-        @plan_file   = "plans/#{@environment.level}-plan.tf"
+        @secrets = Dome::Secrets.new(@environment)
+        @state = Dome::State.new(@environment)
+        @plan_file = "plans/#{@environment.level}-plan.tf"
 
         puts '--- Secrets terraform state location ---'
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
@@ -98,7 +98,7 @@ module Dome
       when 'environment'
         puts '--- AWS credentials for accessing environment state ---'
         environment = @environment.environment
-        account     = @environment.account
+        account = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
@@ -114,21 +114,21 @@ module Dome
       when 'roles'
         puts '--- AWS credentials for accessing roles state ---'
         environment = @environment.environment
-        account     = @environment.account
+        account = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
       when 'services'
         puts '--- AWS credentials for accessing services state ---'
         environment = @environment.environment
-        account     = @environment.account
+        account = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
       when /^secrets-/
         puts '--- AWS credentials for accessing secrets state ---'
         environment = @environment.environment
-        account     = @environment.account
+        account = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
@@ -175,6 +175,7 @@ module Dome
         raise Dome::InvalidLevelError.new, level
       end
     end
+
     # rubocop:enable Metrics/PerceivedComplexity
 
     def validate_tf_version
@@ -183,12 +184,12 @@ module Dome
 
       infra_version = File.read(infra_version_file).strip
       tf_version_output = command_output('terraform --version', '[!] Could not get terraform version')
-      tf_version = tf_version_output[/Terraform v(.*)$/,1]
+      tf_version = tf_version_output[/Terraform v(.*)$/, 1]
       if tf_version != infra_version
         error_message = "\n[!] terraform binary version does not match version specified in .terraform-version\n"
         error_message += "      terraform binary version: #{tf_version}\n"
         error_message += "      .terraform-version:       #{infra_version}\n"
-        error_message += "    Make sure that you are using tfenv to manage terraform versions"
+        error_message += '    Make sure that you are using tfenv to manage terraform versions'
         raise error_message
       end
     end
@@ -212,20 +213,20 @@ module Dome
 
     def apply
       @secrets.secret_env_vars
-      command         = "terraform apply #{@plan_file}"
+      command = "terraform apply #{@plan_file}"
       failure_message = '[!] something went wrong when applying the TF plan'
       @state.s3_state
       execute_command(command, failure_message)
     end
 
     def refresh
-      command         = 'terraform refresh'
+      command = 'terraform refresh'
       failure_message = '[!] something went wrong when doing terraform refresh'
       execute_command(command, failure_message)
     end
 
     def statecmd(arguments)
-      command         = "terraform state #{arguments}"
+      command = "terraform state #{arguments}"
       failure_message = "[!] something went wrong when doing terraform state #{arguments}"
       execute_command(command, failure_message)
     end
@@ -235,16 +236,16 @@ module Dome
       params = ''
       case level
       when 'environment', 'services'
-        params = " -var-file=params/env.tfvars"
+        params = ' -var-file=params/env.tfvars'
       end
-      command         = "terraform import#{params} #{arguments}"
+      command = "terraform import#{params} #{arguments}"
       failure_message = "[!] something went wrong when doing terraform import #{arguments}"
       execute_command(command, failure_message)
     end
 
     def console
       @secrets.secret_env_vars
-      command         = 'terraform console'
+      command = 'terraform console'
       failure_message = '[!] something went wrong when doing terraform console'
       execute_command(command, failure_message)
     end
@@ -254,40 +255,40 @@ module Dome
       when 'environment'
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
+        command = "terraform plan -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
         failure_message = '[!] something went wrong when creating the environment TF plan'
         execute_command(command, failure_message)
       when 'ecosystem'
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
+        command = "terraform plan -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
         failure_message = '[!] something went wrong when creating the ecosystem TF plan'
         execute_command(command, failure_message)
       when 'ecoroles'
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command = "terraform plan -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the ecoroles TF plan'
         execute_command(command, failure_message)
       when 'product'
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command = "terraform plan -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the product TF plan'
         execute_command(command, failure_message)
       when 'roles'
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command = "terraform plan -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the role TF plan'
         execute_command(command, failure_message)
       when 'services'
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file} -var-file=../../params/env.tfvars"
+        command = "terraform plan -refresh=true -out=#{@plan_file} -var-file=../../params/env.tfvars"
         failure_message = '[!] something went wrong when creating the service TF plan'
         execute_command(command, failure_message)
       when /^secrets-/
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command = "terraform plan -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the secret TF plan'
         execute_command(command, failure_message)
       else
@@ -321,13 +322,13 @@ module Dome
     def terraform_init
       extra_params = configure_providers
 
-      command         = "terraform init #{extra_params}"
+      command = "terraform init #{extra_params}"
       failure_message = 'something went wrong when initialising TF'
       execute_command(command, failure_message)
     end
 
     def output
-      command         = 'terraform output'
+      command = 'terraform output'
       failure_message = 'something went wrong when printing TF output variables'
       execute_command(command, failure_message)
     end
@@ -356,6 +357,16 @@ module Dome
         plugin_dirs << install_provider(provider)
       end
 
+      # Support optional extra providers via .terraform-providers-local.yaml
+      optional_providers_config = File.join(@environment.settings.project_root, '.terraform-providers-local.yaml')
+      if File.exist? optional_providers_config
+        optional_providers = YAML.load_file(optional_providers_config)
+
+        optional_providers['provider'].each do |provider|
+          plugin_dirs << install_provider(provider)
+        end
+      end
+
       plugin_dirs.map { |dir| "-plugin-dir #{dir}" }.join(' ')
     end
 
@@ -370,12 +381,17 @@ module Dome
         raise 'Invalid platform, only linux and darwin are supported.'
       end
 
-      uri = "https://releases.hashicorp.com/terraform-provider-#{provider['name']}/#{provider['version']}/terraform-provider-#{provider['name']}_#{provider['version']}_#{arch}.zip"
-      dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', provider['name'], provider['version'], 'registry.terraform.io', provider['namespace'], provider['name'], provider['version'], arch)
+      # provider metadata
+      name = provider['name']
+      version = provider['version']
+      namespace = provider['namespace'] || 'hashicorp'
+      hostname = provider['hostname'] || 'registry.terraform.io'
 
+      uri = "https://releases.hashicorp.com/terraform-provider-#{name}/#{version}/terraform-provider-#{name}_#{version}_#{arch}.zip"
+      dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', name, version, hostname, namespace, name, version, arch)
 
       # The directory to search for the plugin
-      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', provider['name'], provider['version'])
+      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', name, version)
       return plugin_dir unless Dir[dir].empty?
 
       FileUtils.makedirs(dir, mode: 0o0755)
