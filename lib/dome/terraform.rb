@@ -356,6 +356,16 @@ module Dome
         plugin_dirs << install_provider(provider)
       end
 
+      # Support optional extra providers via .terraform-providers-local.yaml
+      optional_providers_config = File.join(@environment.settings.project_root, '.terraform-providers-local.yaml')
+      if File.exist? optional_providers_config
+        optional_providers = YAML.load_file(optional_providers_config)
+
+        optional_providers['provider'].each do |provider|
+          plugin_dirs << install_provider(provider)
+        end
+      end
+
       plugin_dirs.map { |dir| "-plugin-dir #{dir}" }.join(' ')
     end
 
@@ -370,12 +380,19 @@ module Dome
         raise 'Invalid platform, only linux and darwin are supported.'
       end
 
-      uri = "https://releases.hashicorp.com/terraform-provider-#{provider['name']}/#{provider['version']}/terraform-provider-#{provider['name']}_#{provider['version']}_#{arch}.zip"
-      dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', provider['name'], provider['version'], 'registry.terraform.io', provider['namespace'], provider['name'], provider['version'], arch)
+      # provider metadata
+      name      = provider['name']
+      version   = provider['version']
+      namespace = provider['namespace'] || 'hashicorp'
+      hostname  = provider['hostname'] || "https://releases.hashicorp.com/terraform-provider-#{name}/#{version}"
 
+      filename = "terraform-provider-#{name}_#{version}_#{arch}.zip"
+      uri = "#{hostname}/#{filename}"
+
+      dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', name, version, 'registry.terraform.io', namespace, name, version, arch)
 
       # The directory to search for the plugin
-      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', provider['name'], provider['version'])
+      plugin_dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', name, version)
       return plugin_dir unless Dir[dir].empty?
 
       FileUtils.makedirs(dir, mode: 0o0755)
