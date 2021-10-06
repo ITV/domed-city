@@ -384,9 +384,11 @@ module Dome
       name      = provider['name']
       version   = provider['version']
       namespace = provider['namespace'] || 'hashicorp'
-      hostname  = provider['hostname'] || 'releases.hashicorp.com'
+      hostname  = provider['hostname'] || "https://releases.hashicorp.com/terraform-provider-#{name}/#{version}"
 
-      uri = "https://#{hostname}/terraform-provider-#{name}/#{version}/terraform-provider-#{name}_#{version}_#{arch}.zip"
+      filename = "terraform-provider-#{name}_#{version}_#{arch}.zip"
+      uri = "#{hostname}/#{filename}"
+
       dir = File.join(Dir.home, '.terraform.d', 'providercache_tf14on', name, version, 'registry.terraform.io', namespace, name, version, arch)
 
       # The directory to search for the plugin
