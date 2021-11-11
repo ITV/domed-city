@@ -1,3 +1,7 @@
+# 12.2.1
+BUGFIX:
+- add params at ecosystem level during import
+
 # 12.2.0
 FEATURES:
   - support installing 3rd-party providers.
