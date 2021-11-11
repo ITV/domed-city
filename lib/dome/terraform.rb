@@ -234,7 +234,7 @@ module Dome
       @secrets.secret_env_vars
       params = ''
       case level
-      when 'environment', 'services'
+      when 'ecosystem', 'environment', 'services'
         params = " -var-file=params/env.tfvars"
       end
       command         = "terraform import#{params} #{arguments}"
