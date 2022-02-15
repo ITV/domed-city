@@ -1,3 +1,7 @@
+# 12.3.0
+FEATURE:
+- add optional `--json` arg to use `-json` in plan/apply
+
 # 12.2.1
 BUGFIX:
 - add params at ecosystem level during import

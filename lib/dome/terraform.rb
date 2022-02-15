@@ -10,7 +10,7 @@ module Dome
 
     attr_reader :state
 
-    def initialize(sudo: false)
+    def initialize(sudo: false, json:false)
       case level
       when 'environment'
         @environment = Dome::Environment.new
@@ -87,6 +87,8 @@ module Dome
         raise Dome::InvalidLevelError.new, level
       end
 
+      @extra_plan_args = json ? ' -json' : ''
+      @extra_apply_args = json ? ' -json' : ''
       @environment.sudo if sudo
     end
 
@@ -212,7 +214,7 @@ module Dome
 
     def apply
       @secrets.secret_env_vars
-      command         = "terraform apply #{@plan_file}"
+      command         = "terraform apply #{@extra_apply_args} #{@plan_file}"
       failure_message = '[!] something went wrong when applying the TF plan'
       @state.s3_state
       execute_command(command, failure_message)
@@ -254,40 +256,40 @@ module Dome
       when 'environment'
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
         failure_message = '[!] something went wrong when creating the environment TF plan'
         execute_command(command, failure_message)
       when 'ecosystem'
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file} -var-file=params/env.tfvars"
         failure_message = '[!] something went wrong when creating the ecosystem TF plan'
         execute_command(command, failure_message)
       when 'ecoroles'
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the ecoroles TF plan'
         execute_command(command, failure_message)
       when 'product'
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the product TF plan'
         execute_command(command, failure_message)
       when 'roles'
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the role TF plan'
         execute_command(command, failure_message)
       when 'services'
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file} -var-file=../../params/env.tfvars"
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file} -var-file=../../params/env.tfvars"
         failure_message = '[!] something went wrong when creating the service TF plan'
         execute_command(command, failure_message)
       when /^secrets-/
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
-        command         = "terraform plan -refresh=true -out=#{@plan_file}"
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the secret TF plan'
         execute_command(command, failure_message)
       else
