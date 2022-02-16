@@ -52,6 +52,7 @@ $ bundle exec dome
   -r, --refresh          Refresh the state
   -c, --console          Spawn terraform console
   -u, --sudo             Assume itv-root instead of the role specified in profile
+  -j, --json             Pass the `-json` arg to plan and apply commands
   -v, --version          Print version and exit
   -h, --help             Show this message
   -e, --environment      Spawn sub-shell with the exported variables

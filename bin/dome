@@ -24,12 +24,13 @@ opts = Optimist.options do
   opt :refresh, 'Refresh the state'
   opt :console, 'Spawn terraform console'
   opt :sudo, 'Assume itv-root instead of the role specified in profile'
+  opt :json, 'Use -json for plan and apply commands'
   opt :environment, 'Spawn sub-shell with the exported variables'
 end
 
 Optimist.educate unless opts.value?(true)
 
-@dome = Dome::Terraform.new(sudo: opts[:sudo])
+@dome = Dome::Terraform.new(sudo: opts[:sudo], json: opts[:json])
 @dome.validate_tf_version
 
 if opts[:environment]
