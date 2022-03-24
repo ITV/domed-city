@@ -86,17 +86,17 @@ module Dome
       cidr_ecosystem_dev = []
       cidr_ecosystem_prd = []
 
-      ecosystem_environments = @settings.parse['ecosystems'][@ecosystem.to_s]['environments'].keys
+      ecosystem_environments = @settings.parse['ecosystems'][@ecosystem.to_s]
       ecosystem_environments.each do |k|
         cidr_ecosystem << @settings.parse['aws'][@ecosystem.to_s]['aws_vpc_cidr']
       end
 
-      dev_ecosystem_environments = @settings.parse['ecosystems']['dev'].keys
+      dev_ecosystem_environments = @settings.parse['ecosystems']['dev']
       dev_ecosystem_environments.each do |k|
         cidr_ecosystem_dev << @settings.parse['aws']['dev']['aws_vpc_cidr']
       end
 
-      prd_ecosystem_environments = @settings.parse['ecosystems']['prd'].keys
+      prd_ecosystem_environments = @settings.parse['ecosystems']['prd']
       prd_ecosystem_environments.each do |k|
         cidr_ecosystem_prd << @settings.parse['aws']['prd']['aws_vpc_cidr']
       end
