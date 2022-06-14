@@ -376,6 +376,8 @@ module Dome
 
       if RUBY_PLATFORM =~ /linux/
         arch = 'linux_amd64'
+      elsif EUBY_PLATFORM =~ /arm64-darwin/
+        arch = 'darwin_amd64'
       elsif RUBY_PLATFORM =~ /darwin/
         arch = 'darwin_amd64'
       else
