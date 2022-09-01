@@ -1,3 +1,7 @@
+# 12.4.0
+FEATURE:
+- Add support for darwin arm64 providers
+
 # 12.3.0
 FEATURE:
 - add optional `--json` arg to use `-json` in plan/apply
