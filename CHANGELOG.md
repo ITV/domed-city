@@ -1,3 +1,7 @@
+# 13.0.1
+BUGFIX:
+- correct bucket/prefix referenced to get version ID
+- ensure breaking changes in 13.0.0 are adhered to
 # 13.0.0
 BREAKING:
 - Add prd infra changes to core kpi bucket
