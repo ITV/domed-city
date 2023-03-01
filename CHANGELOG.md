@@ -1,3 +1,9 @@
+# 13.0.0
+BREAKING:
+- Add prd infra changes to core kpi bucket
+- Requires tf-aws-eksci v32.0.0
+- Requires cp-jenkins-libs v12.0.0
+
 # 12.4.0
 FEATURE:
 - Add support for darwin arm64 providers

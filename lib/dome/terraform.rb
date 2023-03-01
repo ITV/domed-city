@@ -218,6 +218,12 @@ module Dome
       failure_message = '[!] something went wrong when applying the TF plan'
       @state.s3_state
       execute_command(command, failure_message)
+      if $?.exitstatus == 0
+        puts '--- Uploading change to KPI bucket ---'
+        author = `git config user.name`.strip
+        product = @state.state_bucket_name.split('-')[3]
+        upload_kpi(product, @environment.environment, author, @state.state_bucket_name, @state.state_file_name)
+      end
     end
 
     def refresh
