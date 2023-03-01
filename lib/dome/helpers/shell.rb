@@ -21,6 +21,7 @@ module Dome
           f.puts "#{timestamp},#{product},#{environment},#{author},#{version_id},#{bucket_name},#{file_name}"
         end
         command_output("aws-vault exec #{product}-prd-pe -- env -- aws s3 cp dome_kpi.csv s3://itv-core-terraform-kpi/#{product}-infra/dome_kpi.csv", "Failed to upload new object")
+        File.delete("dome_kpi.csv")
       end
     end
 
