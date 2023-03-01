@@ -1,3 +1,6 @@
+# 13.0.2
+BUGFIX:
+- cleanup kpi csv file after upload
 # 13.0.1
 BUGFIX:
 - correct bucket/prefix referenced to get version ID
