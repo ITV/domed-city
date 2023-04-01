@@ -3,7 +3,7 @@
 # domed-city
 Simple CLI application that wraps the Terraform API.
 
-## Purpose
+## Purpose
 
 To consolidate, improve and enforce standards around ITV's use of Terraform across product teams.
 
