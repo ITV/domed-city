@@ -1,3 +1,6 @@
+# 13.0.3
+BUGFIX:
+- check ecosystem before aws-vault kpi commands
 # 13.0.2
 BUGFIX:
 - cleanup kpi csv file after upload
