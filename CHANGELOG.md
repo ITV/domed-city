@@ -1,3 +1,6 @@
+# 13.0.4
+BUGFIX:
+- upload kpi changes in CI
 # 13.0.3
 BUGFIX:
 - check ecosystem before aws-vault kpi commands
