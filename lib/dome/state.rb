@@ -21,7 +21,13 @@ module Dome
         "itv-terraform-state-#{@environment.project}"
       when 'roles'
         "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-#{@environment.environment}-roles"
+      when 'ecoservices'
+        "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-services"
+      when 'ecoservices-all'
+        "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-services"
       when 'services'
+        "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-#{@environment.environment}-services"
+      when 'services-all'
         "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-#{@environment.environment}-services"
       when /^secrets-/
         "itv-terraform-state-#{@environment.project}-#{@environment.ecosystem}-#{@environment.environment}-secrets"
@@ -43,6 +49,8 @@ module Dome
       when 'roles'
         "#{@environment.level}.tfstate"
       when 'services'
+        "#{@environment.project}-#{@environment.ecosystem}-#{@environment.environment}-#{@environment.services}.tfstate"
+      when 'services-all'
         "#{@environment.project}-#{@environment.ecosystem}-#{@environment.environment}-#{@environment.services}.tfstate"
       when /^secrets-/
         "#{@environment.level}.tfstate"

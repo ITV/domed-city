@@ -64,6 +64,21 @@ module Dome
         @account                = directories[-4]
         @services               = directories[-1]
 
+      when 'ecoservices'
+        @environment            = directories[-3].split('-')[-1]
+        @account                = directories[-3]
+        @services               = directories[-1]
+
+      when 'ecoservices-all'
+        @environment            = directories[-2].split('-')[-1]
+        @account                = directories[-2]
+        @services               = directories[-1]
+
+      when 'services-all'
+        @environment            = directories[-2]
+        @account                = directories[-3]
+        @services               = directories[-1]
+
       when /^secrets-/
         @environment            = directories[-3]
         @account                = directories[-4]

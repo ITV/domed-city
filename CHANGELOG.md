@@ -1,3 +1,16 @@
+# 13.1.0
+FEATURES:
+- add support for ecoservices
+- add support for ecoservices-all and services-all
+  - these levels require terragrunt, and allow `run-all` plan & apply to be used (with cautioni on the apply!)
+  - an empty `terragrunt.hcl` file is required for the `-all` functionality:
+```
+for dir in $(find . -name 'sso_users*' -type d | grep -v terraform)
+do
+echo "" > $dir/terragrunt.hcl
+done
+```
+
 # 13.0.4
 BUGFIX:
 - upload kpi changes in CI

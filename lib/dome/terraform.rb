@@ -62,7 +62,37 @@ module Dome
         puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
         puts "[*] S3 object name: #{@state.state_file_name.colorize(:green)}"
         puts
+      when 'ecoservices'
+        @environment = Dome::Environment.new
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.services}-plan.tf"
+
+        puts '--- Services terraform state location ---'
+        puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
+        puts "[*] S3 object name: #{@state.state_file_name.colorize(:green)}"
+        puts
+      when 'ecoservices-all'
+        @environment = Dome::Environment.new
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.services}-plan.tf"
+
+        puts '--- Services terraform state location ---'
+        puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
+        puts "[*] S3 object name: #{@state.state_file_name.colorize(:green)}"
+        puts
       when 'services'
+        @environment = Dome::Environment.new
+        @secrets     = Dome::Secrets.new(@environment)
+        @state       = Dome::State.new(@environment)
+        @plan_file   = "plans/#{@environment.services}-plan.tf"
+
+        puts '--- Services terraform state location ---'
+        puts "[*] S3 bucket name: #{@state.state_bucket_name.colorize(:green)}"
+        puts "[*] S3 object name: #{@state.state_file_name.colorize(:green)}"
+        puts
+      when 'services-all'
         @environment = Dome::Environment.new
         @secrets     = Dome::Secrets.new(@environment)
         @state       = Dome::State.new(@environment)
@@ -120,8 +150,29 @@ module Dome
         @environment.invalid_account_message unless @environment.valid_account? account
         @environment.invalid_environment_message unless @environment.valid_environment? environment
         @environment.aws_credentials
+      when 'ecoservices'
+        puts '--- AWS credentials for accessing services state ---'
+        environment = @environment.environment
+        account     = @environment.account
+        @environment.invalid_account_message unless @environment.valid_account? account
+        @environment.invalid_environment_message unless @environment.valid_environment? environment
+        @environment.aws_credentials
+      when 'ecoservices-all'
+        puts '--- AWS credentials for accessing services-all state ---'
+        environment = @environment.environment
+        account     = @environment.account
+        @environment.invalid_account_message unless @environment.valid_account? account
+        @environment.invalid_environment_message unless @environment.valid_environment? environment
+        @environment.aws_credentials
       when 'services'
         puts '--- AWS credentials for accessing services state ---'
+        environment = @environment.environment
+        account     = @environment.account
+        @environment.invalid_account_message unless @environment.valid_account? account
+        @environment.invalid_environment_message unless @environment.valid_environment? environment
+        @environment.aws_credentials
+      when 'services-all'
+        puts '--- AWS credentials for accessing services-all state ---'
         environment = @environment.environment
         account     = @environment.account
         @environment.invalid_account_message unless @environment.valid_account? account
@@ -286,10 +337,28 @@ module Dome
         command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file}"
         failure_message = '[!] something went wrong when creating the role TF plan'
         execute_command(command, failure_message)
+      when 'ecoservices'
+        @secrets.extract_certs
+        FileUtils.mkdir_p 'plans'
+        command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file} -var-file=../../params/env.tfvars"
+        failure_message = '[!] something went wrong when creating the service TF plan'
+        execute_command(command, failure_message)
+      when 'ecoservices-all'
+        @secrets.extract_certs
+        FileUtils.mkdir_p 'plans'
+        command         = "terragrunt run-all plan #{@extra_plan_args} -refresh=true -var-file=../../params/env.tfvars"
+        failure_message = '[!] something went wrong when creating the service TF plan'
+        execute_command(command, failure_message)
       when 'services'
         @secrets.extract_certs
         FileUtils.mkdir_p 'plans'
         command         = "terraform plan #{@extra_plan_args} -refresh=true -out=#{@plan_file} -var-file=../../params/env.tfvars"
+        failure_message = '[!] something went wrong when creating the service TF plan'
+        execute_command(command, failure_message)
+      when 'services-all'
+        @secrets.extract_certs
+        FileUtils.mkdir_p 'plans'
+        command         = "terragrunt run-all plan #{@extra_plan_args} -refresh=true -var-file=../../params/env.tfvars"
         failure_message = '[!] something went wrong when creating the service TF plan'
         execute_command(command, failure_message)
       when /^secrets-/
