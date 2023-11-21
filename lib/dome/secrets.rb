@@ -8,12 +8,17 @@ module Dome
       @environment = environment
       @settings    = Dome::Settings.new
       @hiera       = Dome::HieraLookup.new(@environment)
+      @secretsmanager = Dome::SecretsManagerLookup.new(@environment)
     end
 
     def secret_env_vars
-      return if dome_config.nil? || hiera_keys_config.nil?
-
-      @hiera.secret_env_vars(hiera_keys_config)
+      return if dome_config.nil? || hiera_keys_config.nil? || secretsmanager_config.nil?
+      unless hiera_keys_config.nil?
+        @hiera.secret_env_vars(hiera_keys_config)
+      end
+      unless secretsmanager_config.nil?
+        @secretsmanager.secret_env_vars(secretsmanager_config)
+      end
     end
 
     def extract_certs
@@ -41,6 +46,14 @@ module Dome
           'in your itv.yaml.'
       end
       @settings.parse['dome']['certs']
+    end
+
+    def secretsmanager_config
+      unless @settings.parse['dome']['secretsmanager']
+        puts "No #{'secretsmanager'.colorize(:green)} sub-key under #{'dome'.colorize(:green)} key found "\
+          'in your itv.yaml.'
+      end
+      @settings.parse['dome']['secretsmanager']
     end
   end
 end
