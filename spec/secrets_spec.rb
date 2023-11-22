@@ -49,7 +49,7 @@ describe Dome do
 
   context 'with valid config' do
     it 'sets secret environment variables' do
-      yaml = { 'dome' => { 'hiera_keys' => { 'artifactory_password' => 'artifactory::root-readonly::password' } , 'secretsmanager' => {}} }
+      yaml = { 'dome' => { 'hiera_keys' => { 'artifactory_password' => 'artifactory::root-readonly::password' }} }
       allow(secrets.settings).to receive(:parse).and_return(yaml)
       expect(secrets.hiera).to receive(:secret_env_vars)
       secrets.secret_env_vars
