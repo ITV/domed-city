@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'aws-sdk-secretsmanager'
 
 module Dome
     class SecretsManagerLookup
@@ -16,21 +15,27 @@ module Dome
           if val.is_a?(String)
             set_env_var(client, key, val)
           elsif val.is_a?(Hash)
-            secret_ecosystem = key
-            if secret_ecosystem == @ecosystem
-              val.each do |eco_key, eco_val|
-                if eco_val.is_a?(String)
-                  set_env_var(client, eco_key, eco_val)
-                elsif eco_val.is_a?(Hash)
-                  secret_environment = eco_key
-                  if secret_environment == @environment
-                    eco_val.each do |env_key, env_val|
-                      set_env_var(client, env_key, env_val)
-                    end
-                  end
-                end
-              end
+            set_ecosystem_env_var(client, key, val)
+          end
+        end
+      end
+
+      def set_ecosystem_env_var(client, secret_ecosystem, secrets)
+        if secret_ecosystem == @ecosystem
+          secrets.each do |key, val|
+            if val.is_a?(String)
+              set_env_var(client, key, val)
+            elsif val.is_a?(Hash)
+              set_environment_env_var(client, key, val)
             end
+          end
+        end
+      end
+
+      def set_environment_env_var(client, secret_environment, secrets)
+        if secret_environment == @environment
+          secrets.each do |key, val|
+            set_env_var(client, key, val)
           end
         end
       end
@@ -51,5 +56,6 @@ module Dome
           ENV[terraform_env_var] = secret_string
         end
       end
+
     end
   end
