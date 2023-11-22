@@ -49,7 +49,10 @@ module Dome
 
         rescue Aws::SecretsManager::Errors::AccessDeniedException
           secret_string = nil
-          puts "[!] Secrets Manager lookup failed for '#{val}', so #{terraform_env_var} was not set.".colorize(:yellow)
+          puts "[!] Access denied by Secrets Manager for '#{val}', so #{terraform_env_var} was not set.".colorize(:yellow)
+        rescue Aws::SecretsManager::Errors::ResourceNotFoundException
+          secret_string = nil
+          puts "[!] Secrets Manager secret not found for '#{val}', so #{terraform_env_var} was not set.".colorize(:yellow)
         else
           puts "[*] Setting #{terraform_env_var.colorize(:green)}."
         ensure
