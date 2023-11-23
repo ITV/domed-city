@@ -7,36 +7,34 @@ module Dome
       @account     = environment.account
       @ecosystem   = environment.ecosystem
       @settings    = Dome::Settings.new
+      @level       = 'eco'
+    end
+
+    def get_the_secrets(secrets_config)
+      secrets_config.each_with_object([]) do |(key, value), keys|
+        keys << { "#{key}": value } unless value.is_a? Hash
+        if @level.eql? 'eco'
+          @level = 'env'
+          add_to_the_keys keys, key, value, @ecosystem
+        else
+          add_to_the_keys keys, key, value, @environment
+        end
+      end
+    end
+
+    def ecosystem_level(key, value)
+      key.eql?(@ecosystem) && value[key]
+    end
+
+    def add_to_the_keys(keys, key, value, level)
+      keys.concat(get_the_secrets(value)) if (value.is_a? Hash) && key.eql?(level)
     end
 
     def secret_env_vars(secret_vars)
       client = Aws::SecretsManager::Client.new
-      secret_vars.each do |key, val|
-        if val.is_a?(String)
-          set_env_var(client, key, val)
-        elsif val.is_a?(Hash)
-          set_ecosystem_env_var(client, key, val)
-        end
-      end
-    end
-
-    def set_ecosystem_env_var(client, secret_ecosystem, secrets)
-      return unless secret_ecosystem == @ecosystem
-
-      secrets.each do |key, val|
-        if val.is_a?(String)
-          set_env_var(client, key, val)
-        elsif val.is_a?(Hash)
-          set_environment_env_var(client, key, val)
-        end
-      end
-    end
-
-    def set_environment_env_var(client, secret_environment, secrets)
-      return unless secret_environment == @environment
-
-      secrets.each do |key, val|
-        set_env_var(client, key, val)
+      secrets = get_the_secrets(secret_vars.each)
+      secrets.each do |secret|
+        set_env_var(client, secret.keys[0].to_s, secret.values[0].to_s)
       end
     end
 
