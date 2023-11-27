@@ -22,7 +22,7 @@ module Dome
       end
     end
 
-    def ecosystem_level(key, value)
+    def ecosystem_level?(key, value)
       key.eql?(@ecosystem) && value[key]
     end
 
@@ -33,23 +33,22 @@ module Dome
     def secret_env_vars(secret_vars)
       client = Aws::SecretsManager::Client.new
       secrets = get_the_secrets(secret_vars.each)
-      secrets.each do |secret|
-        set_env_var(client, secret.keys[0].to_s, secret.values[0].to_s)
+      secrets.each do |key, _val|
+        set_env_var(client, key.keys[0].to_s, key.values[0].to_s)
       end
     end
 
     def set_env_var(client, key, val)
-      val.gsub! '{environment}', @environment
-      val.gsub! '{ecosystem}', @ecosystem
+      secret_id = val.gsub('{environment}', @environment).gsub('{ecosystem}', @ecosystem)
       terraform_env_var = "TF_VAR_#{key}"
       begin
-        secret_string = client.get_secret_value(secret_id: val).secret_string
+        secret_string = client.get_secret_value(secret_id: secret_id).secret_string
       rescue Aws::SecretsManager::Errors::AccessDeniedException
         secret_string = nil
-        puts "[!] Access denied by Secrets Manager for '#{val}', so #{terraform_env_var} was not set.".colorize(:yellow)
+        puts "[!] Access denied by Secrets Manager for '#{secret_id}', so #{terraform_env_var} was not set.".colorize(:yellow)
       rescue Aws::SecretsManager::Errors::ResourceNotFoundException
         secret_string = nil
-        puts "[!] Secrets Manager secret not found for '#{val}', so #{terraform_env_var} was not set.".colorize(:yellow)
+        puts "[!] Secrets Manager secret not found for '#{secret_id}', so #{terraform_env_var} was not set.".colorize(:yellow)
       else
         puts "[*] Setting #{terraform_env_var.colorize(:green)}."
       ensure
