@@ -10,28 +10,46 @@ module Dome
       @level       = 'eco'
     end
 
-    def get_the_secrets(secrets_config)
-      secrets_config.each_with_object([]) do |(key, value), keys|
-        keys << { "#{key}": value } unless value.is_a? Hash
-        if @level.eql? 'eco'
-          @level = 'env'
-          add_to_the_keys keys, key, value, @ecosystem
-        else
-          add_to_the_keys keys, key, value, @environment
-        end
-      end
-    end
-
-    def add_to_the_keys(keys, key, value, level)
-      keys.concat(get_the_secrets(value)) if (value.is_a? Hash) && key.eql?(level)
-    end
-
     def secret_env_vars(secret_vars)
       client = Aws::SecretsManager::Client.new
-      secrets = get_the_secrets(secret_vars.each)
-      secrets.each do |key, _val|
-        set_env_var(client, key.keys[0].to_s, key.values[0].to_s)
+      secrets = get_the_secrets(secret_vars)
+      secrets.each do |key, val|
+        set_env_var(client, key, val)
       end
+    end
+
+    private
+
+    def get_the_secrets(secret_vars)
+      secrets = {}
+      # global secrets
+      secret_vars.each do |key, val|
+        secrets[key] = val if val.is_a?(String)
+      end
+
+      # ecosystem secrets
+      eco_secrets = get_eco_secrets(secret_vars)
+      secrets = secrets.merge(eco_secrets) if eco_secrets
+
+      # environment secrets
+      env_secrets = get_env_secrets(secret_vars)
+      secrets = secrets.merge(env_secrets) if env_secrets
+    end
+
+    def get_eco_secrets(secret_vars)
+      eco_secrets = {}
+      secret_vars.fetch(@ecosystem, {}).each do |key, val|
+        eco_secrets[key] = val if val.is_a?(String)
+      end
+      eco_secrets
+    end
+
+    def get_env_secrets(secret_vars)
+      env_secrets = {}
+      secret_vars.fetch(@ecosystem, {}).fetch(@environment, {}).each do |key, val|
+        env_secrets[key] = val if val.is_a?(String)
+      end
+      env_secrets
     end
 
     def set_env_var(client, key, val)
