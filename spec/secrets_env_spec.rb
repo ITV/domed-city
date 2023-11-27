@@ -10,7 +10,7 @@ describe Dome do
   let(:secret_manager) { Dome::SecretsManagerLookup.new(environment) }
   let(:level) { 'environment' }
   let(:project_root) { File.realpath('spec/fixtures') }
-  let(:client)  { Struct.new(:secret_string) }
+  let(:client) { Struct.new(:secret_string) }
   let(:secrets_config) do
     {
       'dev' => {
@@ -25,7 +25,7 @@ describe Dome do
       'prd' => {
         'prd_common_secret' => 'prd-prd_common_secret_value-secret',
         'prd' => {
-          'prd_username' => '{ecosystem}/prd_databricks_username/_value',
+          'prd_username' => '{ecosystem}/prd_databricks_username/_value'
         },
         'prdtest' => {
           'prdtest_username' => '{ecosystem}/prdtest_databricks_username/_value'
@@ -39,20 +39,17 @@ describe Dome do
   before(:each) { allow(environment).to receive(:ecosystem).and_return(eco) }
   before(:each) { allow_any_instance_of(Aws::SecretsManager::Client).to receive(:get_secret_value).and_return(client.new('Secret')) }
 
-
-
   it 'outputs the correct vars for DEV environement' do
-    expected_result = [{:dev_common_secret=>"dev_common_secret_value"}, {:dev_databricks_username=>"{ecosystem}/dev_databricks_username/_value"}]
+    expected_result = [{ dev_common_secret: 'dev_common_secret_value' }, { dev_databricks_username: '{ecosystem}/dev_databricks_username/_value' }]
     expect(secret_manager.secret_env_vars(secrets_config)).to eq expected_result
   end
-
 
   context 'when calling secrets in PRD' do
     let(:env) { 'prd' }
     let(:eco) { 'prd' }
 
     it 'outputs the correct vars for PRD environment' do
-      expected_result = [{:prd_common_secret=>"prd-prd_common_secret_value-secret"}, {:prd_username=>"{ecosystem}/prd_databricks_username/_value"}]
+      expected_result = [{ prd_common_secret: 'prd-prd_common_secret_value-secret' }, { prd_username: '{ecosystem}/prd_databricks_username/_value' }]
       expect(secret_manager.secret_env_vars(secrets_config)).to eq expected_result
     end
   end
@@ -62,7 +59,7 @@ describe Dome do
     let(:eco) { 'prd' }
 
     it 'outputs the correct vars for PRD environment' do
-      expected_result = [{:prd_common_secret=>"prd-prd_common_secret_value-secret"}, {:prdtest_username=>"{ecosystem}/prdtest_databricks_username/_value"}]
+      expected_result = [{ prd_common_secret: 'prd-prd_common_secret_value-secret' }, { prdtest_username: '{ecosystem}/prdtest_databricks_username/_value' }]
       expect(secret_manager.secret_env_vars(secrets_config)).to eq expected_result
     end
   end

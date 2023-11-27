@@ -10,8 +10,8 @@ module Dome
     end
 
     def get_the_secrets(secrets_config)
-      secrets_config.each_with_object([]) do |(key, value),keys|
-        keys << {"#{key}": value} unless value.is_a? Hash 
+      secrets_config.each_with_object([]) do |(key, value), keys|
+        keys << { "#{key}": value } unless value.is_a? Hash
         if ecosystem_level? key, value
           add_to_the_keys keys, key, value, @ecosystem
         else
@@ -20,18 +20,18 @@ module Dome
       end
     end
 
-    def ecosystem_level? key, value
+    def ecosystem_level?(key, value)
       key.eql?(@ecosystem) && value[key]
     end
 
-    def add_to_the_keys keys, key, value, level
+    def add_to_the_keys(keys, key, value, level)
       keys.concat(get_the_secrets(value)) if (value.is_a? Hash) && key.eql?(level)
     end
 
     def secret_env_vars(secret_vars)
       client = Aws::SecretsManager::Client.new
       secrets = get_the_secrets(secret_vars.each)
-      secrets.each do |key, val|
+      secrets.each do |key, _val|
         set_env_var(client, key.keys[0].to_s, key.values[0].to_s)
       end
     end
