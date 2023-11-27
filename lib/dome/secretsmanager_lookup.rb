@@ -22,10 +22,6 @@ module Dome
       end
     end
 
-    def ecosystem_level?(key, value)
-      key.eql?(@ecosystem) && value[key]
-    end
-
     def add_to_the_keys(keys, key, value, level)
       keys.concat(get_the_secrets(value)) if (value.is_a? Hash) && key.eql?(level)
     end

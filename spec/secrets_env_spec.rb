@@ -58,7 +58,7 @@ describe Dome do
     let(:env) { 'prdtest' }
     let(:eco) { 'prd' }
 
-    it 'outputs the correct vars for PRD environment' do
+    it 'outputs the correct vars for PRDTEST environment' do
       expected_result = [{ prd_common_secret: 'prd-prd_common_secret_value-secret' }, { prdtest_username: '{ecosystem}/prdtest_databricks_username/_value' }]
       expect(secret_manager.secret_env_vars(secrets_config)).to eq expected_result
     end
