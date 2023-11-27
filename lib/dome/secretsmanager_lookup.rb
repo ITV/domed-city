@@ -9,9 +9,17 @@ module Dome
       @settings    = Dome::Settings.new
     end
 
+    def secret_env_vars(secret_vars)
+      get_the_secrets(secret_vars.each).each do |key, _|
+        set_env_var(Aws::SecretsManager::Client.new, key.keys[0].to_s, key.values[0].to_s)
+      end
+    end
+
+    private
+
     def get_the_secrets(secrets_config)
       secrets_config.each_with_object([]) do |(key, value),keys|
-        keys << {"#{key}": value} unless value.is_a? Hash 
+        keys << { "#{key}": value } unless value.is_a? Hash
         if ecosystem_level? key, value
           add_to_the_keys keys, key, value, @ecosystem
         else
@@ -20,32 +28,23 @@ module Dome
       end
     end
 
-    def ecosystem_level? key, value
-      key.eql?(@ecosystem) && value[key]
-    end
-
-    def add_to_the_keys keys, key, value, level
+    def add_to_the_keys(keys, key, value, level)
       keys.concat(get_the_secrets(value)) if (value.is_a? Hash) && key.eql?(level)
     end
 
-    def secret_env_vars(secret_vars)
-      client = Aws::SecretsManager::Client.new
-      secrets = get_the_secrets(secret_vars.each)
-      secrets.each do |key, val|
-        set_env_var(client, key.keys[0].to_s, key.values[0].to_s)
-      end
+    def ecosystem_level?(key, value)
+      key.eql?(@ecosystem) && value[key]
     end
 
     def set_env_var(client, key, val)
       secret_id = val.gsub('{environment}', @environment).gsub('{ecosystem}', @ecosystem)
       terraform_env_var = "TF_VAR_#{key}"
+      secret_string = nil
       begin
         secret_string = client.get_secret_value(secret_id: secret_id).secret_string
       rescue Aws::SecretsManager::Errors::AccessDeniedException
-        secret_string = nil
         puts "[!] Access denied by Secrets Manager for '#{secret_id}', so #{terraform_env_var} was not set.".colorize(:yellow)
       rescue Aws::SecretsManager::Errors::ResourceNotFoundException
-        secret_string = nil
         puts "[!] Secrets Manager secret not found for '#{secret_id}', so #{terraform_env_var} was not set.".colorize(:yellow)
       else
         puts "[*] Setting #{terraform_env_var.colorize(:green)}."
