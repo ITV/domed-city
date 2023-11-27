@@ -7,12 +7,14 @@ module Dome
       @account     = environment.account
       @ecosystem   = environment.ecosystem
       @settings    = Dome::Settings.new
+      @level       = 'eco'
     end
 
     def get_the_secrets(secrets_config)
       secrets_config.each_with_object([]) do |(key, value), keys|
         keys << { "#{key}": value } unless value.is_a? Hash
-        if ecosystem_level? key, value
+        if @level.eql? 'eco'
+          @level = 'env'
           add_to_the_keys keys, key, value, @ecosystem
         else
           add_to_the_keys keys, key, value, @environment
