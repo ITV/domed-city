@@ -48,6 +48,11 @@ describe Dome do
     expect(secret_manager.secret_env_vars(secrets_config)).to eq expected_result
   end
 
+  it 'prints correct message to the stdout' do
+    expect { secret_manager.secret_env_vars(secrets_config) }
+      .to output("[*] Setting \e[0;32;49mTF_VAR_dev_common_secret\e[0m.\n[*] Setting \e[0;32;49mTF_VAR_dev_databricks_username\e[0m.\n").to_stdout
+  end
+
   context 'when calling secrets from a nonexistent environment' do
     let(:env) { 'qa' }
 
