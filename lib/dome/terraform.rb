@@ -196,9 +196,9 @@ module Dome
     end
 
     def plan
-      puts '--- Decrypting hiera secrets and pass them as TF_VARs ---'
+      puts '--- Decrypting and retrieving secrets and passing them as TF_VARs ---'
       @secrets.secret_env_vars
-      puts '--- Deleting old plans'
+      puts '--- Deleting old plans ---'
       # delete_terraform_directory # Don't delete it
       delete_plan_file
       delete_tf_lock_file

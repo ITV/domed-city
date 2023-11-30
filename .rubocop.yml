@@ -2,7 +2,7 @@ AllCops:
   Exclude:
     - tmp
     - vendor/**/*
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.7
 Documentation:
   Enabled: false
 
