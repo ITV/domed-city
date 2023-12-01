@@ -1,3 +1,7 @@
+# 13.1.1
+BUGFIX:
+ - Fix release version
+
 # 13.1.0
 FEATURES:
  - Adds functionality to get secrets from secrets manager for use as TF Vars before planning/applying with Dome
