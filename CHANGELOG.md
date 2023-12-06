@@ -4,7 +4,29 @@ BUGFIX:
 
 # 13.1.0
 FEATURES:
- - Adds functionality to get secrets from secrets manager for use as TF Vars before planning/applying with Dome
+- Adds functionality to get secrets from secrets manager for use as TF Vars before planning/applying with Dome
+- Secrets can be configured in itv.yaml at the global, ecosystem and environment level such as:
+```
+dome:
+ hiera_keys: {}
+ certs: {}
+ secretsmanager:
+   global_secret: common_{ecosystem}_{environment}_secret_id
+   dev:
+     dev_common_secret: dev_common_secret_id
+     dev:
+       dev_dev_secret: dev_dev_secret_id
+     qa:
+       dev_qa_secret: dev_qa_secret_id
+   prd:
+     prd:
+       prd_prd_secret: prd-prd_secret-id
+```
+
+- The secret id can use string replacement for {ecosystem} and {environment} so in the example above, planning in dev/qa would result in global_secret returning the secret string for the common_dev_qa_secret_id secret in the relevant account.
+- Secrets with duplicate names are overwritten by the most precise scope (env > eco > global)
+- Secret names are output as environment variables with the TF_VAR_ prefix, as per env vars set via Hiera.
+- Secrets can only be access from the authenticated AWS account.
 
 # 13.0.4
 BUGFIX:
